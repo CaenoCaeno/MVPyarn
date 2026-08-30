@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ragnarok Online MVP Respawn Tracker</title>
+  <style>
+    :root {
+      --bg-color: #12141c;
+      --card-bg: #1c1e2e;
+      --border-color: #2e344e;
+      --accent-color: #4a6fa5;
+      --text-main: #d1d5db;
+      --text-bright: #ffffff;
+      --overdue-color: #ff4d4d;
+      --window-color: #ffaa00;
+      --active-color: #4caf50;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding: 15px; font-size: 13px; }
+
+    /* Header & Controls */
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; background: #181a26; padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .nav-tabs { display: flex; gap: 8px; }
+    .tab-btn { background: #25283b; color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+    .tab-btn.active { background: var(--accent-color); color: #fff; border-color: #638ecb; }
+    
+    .search-box { flex-grow: 1; max-width: 250px; }
+    .search-box input { width: 100%; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 6px 10px; border-radius: 4px; }
+    
+    .header-actions { display: flex; gap: 6px; }
+    .audio-btn, .io-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .audio-btn:hover, .io-btn:hover { background: #434c5e; }
+
+    /* Grid Layout */
+    .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+    
+    /* MVP Card */
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .card.overdue { border-color: var(--overdue-color); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+    .editable-input { background: transparent; border: 1px dashed transparent; color: var(--text-bright); font-weight: bold; font-size: 13px; width: 60%; }
+    .editable-input:hover, .editable-input:focus { border-color: var(--accent-color); background: #13141f; outline: none; }
+    .map-input { width: 38%; font-size: 11px; color: #8892b0; text-align: right; }
+
+    .card-body { display: flex; gap: 10px; align-items: center; }
+    .mvp-icon { width: 50px; height: 50px; background: #0d0e14; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #555; overflow: hidden; border: 1px solid #2a2e45; flex-shrink: 0; }
+    .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
+
+    .timer-info { flex-grow: 1; }
+    .window-tag { font-size: 10px; color: #8892b0; margin-bottom: 2px; }
+    .live-timer { font-size: 18px; font-weight: bold; font-family: monospace; color: var(--active-color); }
+    .live-timer.overdue { color: var(--overdue-color); animation: pulse 1s infinite alternate; }
+    .live-timer.in-window { color: var(--window-color); }
+
+    /* Time Inputs */
+    .manual-time-container { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
+    .manual-time-container label { font-size: 10px; color: #8892b0; }
+    .manual-input { width: 65px; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; text-align: center; font-family: monospace; border-radius: 3px; padding: 2px; }
+
+    /* Action Buttons */
+    .card-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 4px; }
+    .action-btn { background: #2e344e; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+    .action-btn:hover { background: #3b4252; }
+    .reset-btn { background: #2e7d32; }
+    .reset-btn:hover { background: #388e3c; }
+    .clear-btn { background: #c62828; }
+    .clear-btn:hover { background: #d32f2f; }
+    .track-toggle { width: 100%; padding: 6px; font-weight: bold; }
+
+    @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">My Farm List</button>
+      <button class="tab-btn" id="tab-catalog" onclick="switchTab('catalog')">All Bosses Catalog</button>
+    </div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
+    </div>
+    <div class="header-actions">
+      <button class="audio-btn" onclick="testAudio()">?? Sound Test</button>
+      <button class="io-btn" onclick="exportData()">?? Export Data</button>
+      <button class="io-btn" onclick="importData()">?? Import Data</button>
+    </div>
+  </header>
+
+  <main id="bossGrid" class="boss-grid"></main>
+
+  <script>
+    const initialBosses = [
+      { id: "baphomet", mobId: 1039, name: "Baphomet", map: "prt_maze03", minWindow: 120, maxWindow: 130 },
+      { id: "phreeoni", mobId: 1159, name: "Phreeoni", map: "moc_fild17", minWindow: 120, maxWindow: 130 },
+      { id: "eddga", mobId: 1115, name: "Eddga", map: "pay_fild11", minWindow: 120, maxWindow: 130 },
+      { id: "moonlight", mobId: 1150, name: "Moonlight Flower", map: "pay_dun04", minWindow: 60, maxWindow: 70 },
+      { id: "gtb", mobId: 1086, name: "Golden Thief Bug", map: "prt_sewb4", minWindow: 60, maxWindow: 70 },
+      { id: "orc_hero", mobId: 1087, name: "Orc Hero", map: "gef_fild14", minWindow: 60, maxWindow: 70 },
+      { id: "orc_lord", mobId: 1190, name: "Orc Lord", map: "gef_fild10", minWindow: 120, maxWindow: 130 },
+      { id: "maya", mobId: 1147, name: "Maya", map: "anthell02", minWindow: 120, maxWindow: 130 },
+      { id: "osiris", mobId: 1038, name: "Osiris", map: "moc_pryd06", minWindow: 60, maxWindow: 70 },
+      { id: "drake", mobId: 1112, name: "Drake", map: "treasure02", minWindow: 120, maxWindow: 130 },
+      { id: "doppelganger", mobId: 1046, name: "Doppelganger", map: "gef_dun02", minWindow: 120, maxWindow: 130 },
+      { id: "mistress", mobId: 1059, name: "Mistress", map: "mjolnir_04", minWindow: 120, maxWindow: 130 },
+      { id: "stormy_knight", mobId: 1251, name: "Stormy Knight", map: "xmas_dun02", minWindow: 60, maxWindow: 70 },
+      { id: "hatii", mobId: 1252, name: "Hatii / Garm", map: "xmas_fild01", minWindow: 120, maxWindow: 130 },
+      { id: "turtle_general", mobId: 1312, name: "Turtle General", map: "tur_dun04", minWindow: 60, maxWindow: 70 },
+      { id: "amon_ra", mobId: 1272, name: "Amon Ra", map: "moc_pryd06", minWindow: 60, maxWindow: 70 },
+      { id: "pharaoh", mobId: 1157, name: "Pharaoh", map: "in_sphinx5", minWindow: 60, maxWindow: 70 },
+      { id: "dark_lord", mobId: 1271, name: "Dark Lord", map: "gl_church", minWindow: 60, maxWindow: 70 },
+      { id: "incantation_samurai", mobId: 1492, name: "Incantation Samurai", map: "ama_dun03", minWindow: 91, maxWindow: 101 },
+      { id: "evil_snake_lord", mobId: 1418, name: "Evil Snake Lord", map: "gon_dun03", minWindow: 94, maxWindow: 104 },
+      { id: "maya_purple", mobId: 1289, name: "Maya Purple", map: "gld_dun03", minWindow: 120, maxWindow: 130 },
+      { id: "lord_of_death", mobId: 1373, name: "Lord of Death", map: "niflheim", minWindow: 133, maxWindow: 143 },
+      { id: "rsx_0806", mobId: 1623, name: "RSX 0806", map: "ein_dun02", minWindow: 125, maxWindow: 135 },
+      { id: "vesper", mobId: 1685, name: "Vesper", map: "jupe_core", minWindow: 120, maxWindow: 130 },
+      { id: "egnigem_cenia", mobId: 1658, name: "Egnigem Cenia (MVP)", map: "lhz_dun02", minWindow: 120, maxWindow: 130 },
+      { id: "ungoliant", mobId: 1618, name: "Ungoliant", map: "ein_fild07", minWindow: 60, maxWindow: 70 },
+      { id: "jewel_ungoliant", mobId: 1618, name: "Jewel Ungoliant", map: "cmd_fild03", minWindow: 60, maxWindow: 70 },
+      { id: "kiel_d01", mobId: 1734, name: "Kiel D-01", map: "kh_dun02", minWindow: 120, maxWindow: 130 },
+      { id: "thanatos", mobId: 1708, name: "Memory of Thanatos", map: "tha_t12", minWindow: 120, maxWindow: 130 },
+      { id: "valkyrie_randgris", mobId: 1751, name: "Valkyrie Randgris", map: "odin_tem03", minWindow: 480, maxWindow: 490 },
+      { id: "gloom_under_night", mobId: 1768, name: "Gloom Under Night", map: "ra_fild06", minWindow: 300, maxWindow: 310 },
+      { id: "ktullanux", mobId: 1779, name: "Ktullanux", map: "ice_dun03", minWindow: 120, maxWindow: 120 },
+      { id: "atroce", mobId: 1785, name: "Atroce", map: "ra_fild02", minWindow: 180, maxWindow: 190 },
+      { id: "fallen_bishop", mobId: 1871, name: "Fallen Bishop Hibram", map: "abbey02", minWindow: 120, maxWindow: 130 },
+      { id: "beelzebub", mobId: 1874, name: "Beelzebub", map: "abbey03", minWindow: 720, maxWindow: 730 },
+      { id: "tao_gunka", mobId: 1583, name: "Tao Gunka", map: "beach_dun2", minWindow: 300, maxWindow: 310 },
+      { id: "wounded_morroc", mobId: 1917, name: "Wounded Morroc", map: "moc_fild22", minWindow: 720, maxWindow: 730 },
+      { id: "ifrit", mobId: 1832, name: "Ifrit", map: "thor_v03", minWindow: 660, maxWindow: 670 },
+      { id: "nidhoggr_shadow", mobId: 2022, name: "Nidhoggr's Shadow", map: "nyd_dun02", minWindow: 300, maxWindow: 310 },
+      { id: "boitata", mobId: 2068, name: "Boitata", map: "bra_dun02", minWindow: 120, maxWindow: 130 },
+      { id: "gorynych", mobId: 1885, name: "Gorynych", map: "mosk_dun03", minWindow: 120, maxWindow: 130 },
+      { id: "reginleif", mobId: 1752, name: "Reginleif", map: "odin_tem02", minWindow: 30, maxWindow: 40 },
+      { id: "ingrid", mobId: 1753, name: "Ingrid", map: "odin_tem02", minWindow: 30, maxWindow: 40 }
+    ];
+
+    let currentTab = 'farm';
+    let isEditingInput = false;
+    let alertedBosses = new Set();
+
+    let state = JSON.parse(localStorage.getItem('ro_mvp_state')) || {
+      tracked: ["baphomet", "eddga", "valkyrie_randgris"],
+      customData: {}
+    };
+
+    function saveState() {
+      localStorage.setItem('ro_mvp_state', JSON.stringify(state));
+    }
+
+    function playChime(freq = 587.33) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } catch (e) {
+        console.log("Audio blocked by browser policy");
+      }
+    }
+
+    function testAudio() { playChime(783.99); }
+
+    function exportData() {
+      const dataStr = JSON.stringify(state);
+      navigator.clipboard.writeText(dataStr).then(() => {
+        alert("State copied to clipboard! Share this code with your party.");
+      }).catch(() => {
+        prompt("Copy this state code manually:", dataStr);
+      });
+    }
+
+    function importData() {
+      const input = prompt("Paste exported state code here:");
+      if (!input) return;
+      try {
+        const parsed = JSON.parse(input);
+        if (parsed.tracked && parsed.customData) {
+          state = parsed;
+          saveState();
+          render();
+          alert("Import successful!");
+        } else { alert("Invalid data format!"); }
+      } catch (e) { alert("Failed to parse data!"); }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-farm').classList.toggle('active', tab === 'farm');
+      document.getElementById('tab-catalog').classList.toggle('active', tab === 'catalog');
+      render();
+    }
+
+    function getBossData(boss) {
+      const custom = state.customData[boss.id] || {};
+      return {
+        name: custom.name || boss.name,
+        map: custom.map || boss.map,
+        killTime: custom.killTime || null
+      };
+    }
+
+    function updateCustomField(id, field, value) {
+      if (!state.customData[id]) state.customData[id] = {};
+      state.customData[id][field] = value;
+      saveState();
+    }
+
+    function resetTimer(id) {
+      if (!state.customData[id]) state.customData[id] = {};
+      state.customData[id].killTime = Date.now();
+      alertedBosses.delete(id);
+      saveState();
+      render();
+    }
+
+    function clearTimer(id) {
+      if (state.customData[id]) {
+        delete state.customData[id].killTime;
+        alertedBosses.delete(id);
+        saveState();
+        render();
+      }
+    }
+
+    function toggleTrack(id) {
+      const index = state.tracked.indexOf(id);
+      if (index > -1) state.tracked.splice(index, 1);
+      else state.tracked.push(id);
+      saveState();
+      render();
+    }
+
+    function handleManualTime(id, val) {
+      if (!/^\d{2}:\d{2}$/.test(val)) return;
+      const [hrs, mins] = val.split(':').map(Number);
+      const target = new Date();
+      target.setHours(hrs, mins, 0, 0);
+      
+      if (target.getTime() > Date.now()) {
+        target.setDate(target.getDate() - 1);
+      }
+      
+      if (!state.customData[id]) state.customData[id] = {};
+      state.customData[id].killTime = target.getTime();
+      alertedBosses.delete(id);
+      saveState();
+      render();
+    }
+
+    function calculateTimes(boss) {
+      const data = getBossData(boss);
+      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", rawKillTimeStr: "" };
+
+      const minSpawnTime = data.killTime + (boss.minWindow * 60000);
+      const maxSpawnTime = data.killTime + (boss.maxWindow * 60000);
+      const now = Date.now();
+      const diff = minSpawnTime - now;
+
+      const kDate = new Date(data.killTime);
+      const rawKillTimeStr = `${String(kDate.getHours()).padStart(2, '0')}:${String(kDate.getMinutes()).padStart(2, '0')}`;
+
+      if (diff <= 0) {
+        const overdueMs = Math.abs(diff);
+        const status = now > maxSpawnTime ? "overdue" : "window";
+        
+        // Sound Alarm trigger (once per spawn window)
+        if (!alertedBosses.has(boss.id)) {
+          alertedBosses.add(boss.id);
+          playChime(880);
+        }
+
+        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, rawKillTimeStr };
+      }
+
+      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", rawKillTimeStr };
+    }
+
+    function formatMs(ms) {
+      const totalSec = Math.floor(ms / 1000);
+      const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+      const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+      const s = String(totalSec % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function render() {
+      const grid = document.getElementById('bossGrid');
+      const filter = document.getElementById('searchInput').value.toLowerCase();
+      
+      let list = initialBosses.filter(b => {
+        const data = getBossData(b);
+        const matchesSearch = data.name.toLowerCase().includes(filter) || data.map.toLowerCase().includes(filter);
+        return currentTab === 'farm' ? (state.tracked.includes(b.id) && matchesSearch) : matchesSearch;
+      });
+
+      if (currentTab === 'farm') {
+        list.sort((a, b) => calculateTimes(a).nextMinMs - calculateTimes(b).nextMinMs);
+      }
+
+      grid.innerHTML = '';
+
+      list.forEach(boss => {
+        const data = getBossData(boss);
+        const timing = calculateTimes(boss);
+        const isTracked = state.tracked.includes(boss.id);
+
+        const card = document.createElement('div');
+        card.className = `card ${timing.status === 'overdue' ? 'overdue' : ''}`;
+
+        card.innerHTML = `
+          <div class="card-header">
+            <input type="text" class="editable-input" value="${data.name}" 
+              onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'name', this.value)">
+            <input type="text" class="editable-input map-input" value="${data.map}" 
+              onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'map', this.value)">
+          </div>
+          <div class="card-body">
+            <div class="mvp-icon">
+              <img src="https://static.divine-pride.net/images/mobs/png/${boss.mobId}.png" alt="${boss.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\' fill=\'%23555\'><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>MVP</text></svg>'">
+            </div>
+            <div class="timer-info">
+              <div class="window-tag">[${boss.minWindow}] - [${boss.maxWindow}] mins</div>
+              <div class="live-timer ${timing.status}">${timing.displayStr}</div>
+              ${currentTab === 'farm' ? `
+                <div class="manual-time-container">
+                  <label>Kill Time:</label>
+                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.rawKillTimeStr}"
+                    onfocus="isEditingInput=true" 
+                    onblur="isEditingInput=false; handleManualTime('${boss.id}', this.value)"
+                    onkeydown="if(event.key==='Enter') { this.blur(); }">
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          <div class="card-actions">
+            ${currentTab === 'farm' ? `
+              <button class="action-btn reset-btn" title="Quick Reset" onclick="resetTimer('${boss.id}')">? Reset</button>
+              <button class="action-btn clear-btn" title="Clear Timer" onclick="clearTimer('${boss.id}')">? Clear</button>
+            ` : `
+              <button class="action-btn track-toggle ${isTracked ? 'clear-btn' : 'reset-btn'}" onclick="toggleTrack('${boss.id}')">
+                ${isTracked ? 'Remove from Farm' : '+ Add to Farm'}
+              </button>
+            `}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    setInterval(() => {
+      if (currentTab === 'farm' && !isEditingInput) {
+        render();
+      }
+    }, 1000);
+
+    render();
+  </script>
+</body>
+</html>
