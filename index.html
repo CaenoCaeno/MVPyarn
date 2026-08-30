@@ -26,43 +26,68 @@
     .tab-btn { background: #25283b; color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; }
     .tab-btn.active { background: var(--accent-color); color: #fff; border-color: #638ecb; }
     
-    .search-box { flex-grow: 1; max-width: 250px; }
+    .search-box { flex-grow: 1; max-width: 220px; }
     .search-box input { width: 100%; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 6px 10px; border-radius: 4px; }
     
+    .server-time-box { display: flex; align-items: center; gap: 8px; background: #0d0e14; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color); }
+    .server-time-box label { font-size: 11px; color: #8892b0; font-weight: bold; }
+    .server-time-box select { background: #1c1e2e; color: #fff; border: 1px solid var(--border-color); border-radius: 3px; font-size: 11px; padding: 2px 4px; }
+    .server-clock { font-family: monospace; font-weight: bold; color: #ffaa00; font-size: 13px; }
+
     .header-actions { display: flex; gap: 6px; }
     .audio-btn, .io-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
     .audio-btn:hover, .io-btn:hover { background: #434c5e; }
 
-    /* Grid Layout */
-    .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+    /* Grid Layout - Expanded for more space */
+    .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
     
     /* MVP Card */
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; }
     .card.overdue { border-color: var(--overdue-color); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
-    .editable-input { background: transparent; border: 1px dashed transparent; color: var(--text-bright); font-weight: bold; font-size: 13px; width: 60%; }
+    .editable-input { background: transparent; border: 1px solid transparent; color: var(--text-bright); font-weight: bold; font-size: 13px; width: 60%; padding: 2px 4px; border-radius: 3px; }
     .editable-input:hover, .editable-input:focus { border-color: var(--accent-color); background: #13141f; outline: none; }
     .map-input { width: 38%; font-size: 11px; color: #8892b0; text-align: right; }
 
-    .card-body { display: flex; gap: 10px; align-items: center; }
-    .mvp-icon { width: 50px; height: 50px; background: #0d0e14; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #555; overflow: hidden; border: 1px solid #2a2e45; flex-shrink: 0; }
+    .card-body { display: flex; gap: 12px; align-items: center; }
+    .mvp-icon { width: 52px; height: 52px; background: #0d0e14; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #555; overflow: hidden; border: 1px solid #2a2e45; flex-shrink: 0; }
     .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
 
     .timer-info { flex-grow: 1; }
-    .window-tag { font-size: 10px; color: #8892b0; margin-bottom: 2px; }
-    .live-timer { font-size: 18px; font-weight: bold; font-family: monospace; color: var(--active-color); }
+    .window-tag { font-size: 11px; color: #8892b0; margin-bottom: 4px; display: flex; align-items: center; gap: 2px; }
+    .live-timer { font-size: 19px; font-weight: bold; font-family: monospace; color: var(--active-color); }
     .live-timer.overdue { color: var(--overdue-color); animation: pulse 1s infinite alternate; }
     .live-timer.in-window { color: var(--window-color); }
 
+    /* Window inputs without box borders or arrows */
+    .window-num-input { 
+      width: 38px; 
+      background: transparent; 
+      border: 1px solid transparent; 
+      color: #8892b0; 
+      font-size: 11px; 
+      text-align: center; 
+      border-radius: 3px;
+      padding: 1px;
+      -moz-appearance: textfield;
+    }
+    .window-num-input::-webkit-outer-spin-button,
+    .window-num-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .window-num-input:focus { border-color: var(--accent-color); background: #13141f; color: #fff; outline: none; }
+
     /* Time Inputs */
-    .manual-time-container { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
-    .manual-time-container label { font-size: 10px; color: #8892b0; }
-    .manual-input { width: 65px; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; text-align: center; font-family: monospace; border-radius: 3px; padding: 2px; }
+    .manual-time-container { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .manual-time-container label { font-size: 11px; color: #8892b0; }
+    .manual-input { width: 75px; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; text-align: center; font-family: monospace; border-radius: 3px; padding: 3px; font-size: 12px; }
+    .manual-input:focus { border-color: var(--accent-color); outline: none; }
 
     /* Action Buttons */
-    .card-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 4px; }
-    .action-btn { background: #2e344e; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+    .card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
+    .action-btn { background: #2e344e; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
     .action-btn:hover { background: #3b4252; }
     .reset-btn { background: #2e7d32; }
     .reset-btn:hover { background: #388e3c; }
@@ -80,13 +105,27 @@
       <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">My Farm List</button>
       <button class="tab-btn" id="tab-catalog" onclick="switchTab('catalog')">All Bosses Catalog</button>
     </div>
+
+    <div class="server-time-box">
+      <label for="utcSelect">Server TZ:</label>
+      <select id="utcSelect" onchange="updateServerTimezone(this.value)">
+        <option value="-8">UTC -8 (PST)</option>
+        <option value="-5">UTC -5 (EST)</option>
+        <option value="0">UTC +0 (GMT)</option>
+        <option value="7">UTC +7 (SEA/TH)</option>
+        <option value="8">UTC +8 (PH/SG)</option>
+        <option value="9">UTC +9 (JST/KST)</option>
+      </select>
+      <span id="serverClock" class="server-clock">00:00:00</span>
+    </div>
+
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
     </div>
     <div class="header-actions">
-      <button class="audio-btn" onclick="testAudio()">?? Sound Test</button>
-      <button class="io-btn" onclick="exportData()">?? Export Data</button>
-      <button class="io-btn" onclick="importData()">?? Import Data</button>
+      <button class="audio-btn" onclick="testAudio()">?? Test</button>
+      <button class="io-btn" onclick="exportData()">?? Export</button>
+      <button class="io-btn" onclick="importData()">?? Import</button>
     </div>
   </header>
 
@@ -119,8 +158,8 @@
       { id: "rsx_0806", mobId: 1623, name: "RSX 0806", map: "ein_dun02", minWindow: 125, maxWindow: 135 },
       { id: "vesper", mobId: 1685, name: "Vesper", map: "jupe_core", minWindow: 120, maxWindow: 130 },
       { id: "egnigem_cenia", mobId: 1658, name: "Egnigem Cenia (MVP)", map: "lhz_dun02", minWindow: 120, maxWindow: 130 },
-      { id: "ungoliant", mobId: 1618, name: "Ungoliant", map: "ein_fild07", minWindow: 60, maxWindow: 70 },
-      { id: "jewel_ungoliant", mobId: 1618, name: "Jewel Ungoliant", map: "cmd_fild03", minWindow: 60, maxWindow: 70 },
+      { id: "ungoliant", mobId: 1618, name: "Ungoliant", map: "ein_fild07", minWindow: 120, maxWindow: 130 },
+      { id: "jewel_ungoliant", mobId: 1618, name: "Jewel Ungoliant", map: "cmd_fild03", minWindow: 120, maxWindow: 130 },
       { id: "kiel_d01", mobId: 1734, name: "Kiel D-01", map: "kh_dun02", minWindow: 120, maxWindow: 130 },
       { id: "thanatos", mobId: 1708, name: "Memory of Thanatos", map: "tha_t12", minWindow: 120, maxWindow: 130 },
       { id: "valkyrie_randgris", mobId: 1751, name: "Valkyrie Randgris", map: "odin_tem03", minWindow: 480, maxWindow: 490 },
@@ -135,8 +174,8 @@
       { id: "nidhoggr_shadow", mobId: 2022, name: "Nidhoggr's Shadow", map: "nyd_dun02", minWindow: 300, maxWindow: 310 },
       { id: "boitata", mobId: 2068, name: "Boitata", map: "bra_dun02", minWindow: 120, maxWindow: 130 },
       { id: "gorynych", mobId: 1885, name: "Gorynych", map: "mosk_dun03", minWindow: 120, maxWindow: 130 },
-      { id: "reginleif", mobId: 1752, name: "Reginleif", map: "odin_tem02", minWindow: 30, maxWindow: 40 },
-      { id: "ingrid", mobId: 1753, name: "Ingrid", map: "odin_tem02", minWindow: 30, maxWindow: 40 }
+      { id: "reginleif", mobId: null, name: "Reginleif", map: "odin_tem02", minWindow: 480, maxWindow: 490 },
+      { id: "ingrid", mobId: null, name: "Ingrid", map: "odin_tem02", minWindow: 480, maxWindow: 490 }
     ];
 
     let currentTab = 'farm';
@@ -145,11 +184,34 @@
 
     let state = JSON.parse(localStorage.getItem('ro_mvp_state')) || {
       tracked: ["baphomet", "eddga", "valkyrie_randgris"],
+      serverUtcOffset: 8,
       customData: {}
     };
 
+    if (state.serverUtcOffset === undefined) state.serverUtcOffset = 8;
+
     function saveState() {
       localStorage.setItem('ro_mvp_state', JSON.stringify(state));
+    }
+
+    function updateServerTimezone(val) {
+      state.serverUtcOffset = parseFloat(val);
+      saveState();
+      render();
+    }
+
+    function getServerTime() {
+      const now = new Date();
+      const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utcMs + (3600000 * state.serverUtcOffset));
+    }
+
+    function updateServerClock() {
+      const sDate = getServerTime();
+      const h = String(sDate.getHours()).padStart(2, '0');
+      const m = String(sDate.getMinutes()).padStart(2, '0');
+      const s = String(sDate.getSeconds()).padStart(2, '0');
+      document.getElementById('serverClock').innerText = `${h}:${m}:${s}`;
     }
 
     function playChime(freq = 587.33) {
@@ -187,6 +249,7 @@
         if (parsed.tracked && parsed.customData) {
           state = parsed;
           saveState();
+          document.getElementById('utcSelect').value = state.serverUtcOffset;
           render();
           alert("Import successful!");
         } else { alert("Invalid data format!"); }
@@ -205,6 +268,8 @@
       return {
         name: custom.name || boss.name,
         map: custom.map || boss.map,
+        minWindow: custom.minWindow !== undefined ? custom.minWindow : boss.minWindow,
+        maxWindow: custom.maxWindow !== undefined ? custom.maxWindow : boss.maxWindow,
         killTime: custom.killTime || null
       };
     }
@@ -243,15 +308,20 @@
     function handleManualTime(id, val) {
       if (!/^\d{2}:\d{2}$/.test(val)) return;
       const [hrs, mins] = val.split(':').map(Number);
-      const target = new Date();
-      target.setHours(hrs, mins, 0, 0);
       
-      if (target.getTime() > Date.now()) {
-        target.setDate(target.getDate() - 1);
+      const sNow = getServerTime();
+      const sTarget = new Date(sNow.getTime());
+      sTarget.setHours(hrs, mins, 0, 0);
+
+      if (sTarget.getTime() > sNow.getTime()) {
+        sTarget.setDate(sTarget.getDate() - 1);
       }
-      
+
+      const offsetMs = (sNow.getTime() - Date.now());
+      const localEpoch = sTarget.getTime() - offsetMs;
+
       if (!state.customData[id]) state.customData[id] = {};
-      state.customData[id].killTime = target.getTime();
+      state.customData[id].killTime = localEpoch;
       alertedBosses.delete(id);
       saveState();
       render();
@@ -259,30 +329,32 @@
 
     function calculateTimes(boss) {
       const data = getBossData(boss);
-      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", rawKillTimeStr: "" };
+      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", serverKillTimeStr: "" };
 
-      const minSpawnTime = data.killTime + (boss.minWindow * 60000);
-      const maxSpawnTime = data.killTime + (boss.maxWindow * 60000);
+      const minSpawnTime = data.killTime + (data.minWindow * 60000);
+      const maxSpawnTime = data.killTime + (data.maxWindow * 60000);
       const now = Date.now();
       const diff = minSpawnTime - now;
 
-      const kDate = new Date(data.killTime);
-      const rawKillTimeStr = `${String(kDate.getHours()).padStart(2, '0')}:${String(kDate.getMinutes()).padStart(2, '0')}`;
+      const localKillDate = new Date(data.killTime);
+      const utcMs = localKillDate.getTime() + (localKillDate.getTimezoneOffset() * 60000);
+      const serverKillDate = new Date(utcMs + (3600000 * state.serverUtcOffset));
+
+      const serverKillTimeStr = `${String(serverKillDate.getHours()).padStart(2, '0')}:${String(serverKillDate.getMinutes()).padStart(2, '0')}`;
 
       if (diff <= 0) {
         const overdueMs = Math.abs(diff);
         const status = now > maxSpawnTime ? "overdue" : "window";
         
-        // Sound Alarm trigger (once per spawn window)
         if (!alertedBosses.has(boss.id)) {
           alertedBosses.add(boss.id);
           playChime(880);
         }
 
-        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, rawKillTimeStr };
+        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, serverKillTimeStr };
       }
 
-      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", rawKillTimeStr };
+      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", serverKillTimeStr };
     }
 
     function formatMs(ms) {
@@ -294,6 +366,8 @@
     }
 
     function render() {
+      document.getElementById('utcSelect').value = state.serverUtcOffset;
+
       const grid = document.getElementById('bossGrid');
       const filter = document.getElementById('searchInput').value.toLowerCase();
       
@@ -317,6 +391,8 @@
         const card = document.createElement('div');
         card.className = `card ${timing.status === 'overdue' ? 'overdue' : ''}`;
 
+        const imgSrc = boss.mobId ? `https://static.divine-pride.net/images/mobs/png/${boss.mobId}.png` : '';
+
         card.innerHTML = `
           <div class="card-header">
             <input type="text" class="editable-input" value="${data.name}" 
@@ -326,15 +402,20 @@
           </div>
           <div class="card-body">
             <div class="mvp-icon">
-              <img src="https://static.divine-pride.net/images/mobs/png/${boss.mobId}.png" alt="${boss.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\' fill=\'%23555\'><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>MVP</text></svg>'">
+              ${imgSrc ? `<img src="${imgSrc}" alt="${boss.name}" onerror="this.parentNode.innerHTML='MVP'">` : 'MVP'}
             </div>
             <div class="timer-info">
-              <div class="window-tag">[${boss.minWindow}] - [${boss.maxWindow}] mins</div>
+              <div class="window-tag">
+                [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
+                - 
+                [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
+                mins
+              </div>
               <div class="live-timer ${timing.status}">${timing.displayStr}</div>
               ${currentTab === 'farm' ? `
                 <div class="manual-time-container">
-                  <label>Kill Time:</label>
-                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.rawKillTimeStr}"
+                  <label>Kill (Server):</label>
+                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.serverKillTimeStr}"
                     onfocus="isEditingInput=true" 
                     onblur="isEditingInput=false; handleManualTime('${boss.id}', this.value)"
                     onkeydown="if(event.key==='Enter') { this.blur(); }">
@@ -358,6 +439,7 @@
     }
 
     setInterval(() => {
+      updateServerClock();
       if (currentTab === 'farm' && !isEditingInput) {
         render();
       }
