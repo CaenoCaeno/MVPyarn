@@ -15,11 +15,11 @@
       --overdue-color: #ff4d4d;
       --window-color: #ffaa00;
       --active-color: #4caf50;
+      --sidebar-width: 280px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); padding: 15px; font-size: 13px; }
-
+    body { background-color: var(--bg-color); color: var(--text-main); font-size: 13px; overflow-x: hidden; }
+    
     /* Hide up/down arrow (spin buttons) globally for ALL number inputs */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
@@ -30,23 +30,90 @@
       -moz-appearance: textfield;
     }
 
-    /* Header & Controls */
-    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; background: #181a26; padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-color); }
-    .nav-tabs { display: flex; gap: 8px; }
-    .tab-btn { background: #25283b; color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+    /* Main Container Layout */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Left Main Content (Boss Grid Area) */
+    .main-content {
+      flex: 1;
+      padding: 15px;
+      transition: margin-right 0.3s ease;
+      width: 100%;
+    }
+
+    /* Right Sidebar Controls */
+    .right-sidebar {
+      width: var(--sidebar-width);
+      background: #181a26;
+      border-left: 1px solid var(--border-color);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      z-index: 90;
+      box-sizing: border-box;
+    }
+
+    /* Collapsed Sidebar State */
+    .right-sidebar.collapsed {
+      transform: translateX(100%);
+    }
+
+    /* Toggle Sidebar Button */
+    .sidebar-toggle-btn {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 100;
+      background: #25283b;
+      color: var(--text-bright);
+      border: 1px solid var(--border-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: -1px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--accent-color);
+    }
+
+    /* Sidebar Sections */
+    .sidebar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .nav-tabs { display: flex; flex-direction: column; gap: 6px; }
+    .tab-btn { background: #25283b; color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; text-align: left; }
     .tab-btn.active { background: var(--accent-color); color: #fff; border-color: #638ecb; }
     
-    .search-box { flex-grow: 1; max-width: 220px; }
-    .search-box input { width: 100%; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 6px 10px; border-radius: 4px; }
+    .search-box { width: 100%; }
+    .search-box input { width: 100%; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 8px 10px; border-radius: 4px; }
     
-    .server-time-box { display: flex; align-items: center; gap: 8px; background: #0d0e14; padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color); }
+    .server-time-box { display: flex; flex-direction: column; gap: 8px; background: #0d0e14; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); align-items: center; text-align: center; }
     .server-time-box label { font-size: 11px; color: #8892b0; font-weight: bold; }
-    .server-time-box select { background: #1c1e2e; color: #fff; border: 1px solid var(--border-color); border-radius: 3px; font-size: 11px; padding: 2px 4px; }
-    .server-clock { font-family: monospace; font-weight: bold; color: #ffaa00; font-size: 13px; }
+    .server-time-box select { background: #1c1e2e; color: #fff; border: 1px solid var(--border-color); border-radius: 3px; font-size: 11px; padding: 4px; width: 100%; }
+    .server-clock { font-family: monospace; font-weight: bold; color: #ffaa00; font-size: 16px; margin-top: 2px; }
+    
+    .io-group { display: flex; gap: 6px; }
+    .io-group .io-btn { flex: 1; }
 
-    .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-    .audio-btn, .io-btn, .add-btn, .mode-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
-    .audio-btn:hover, .io-btn:hover, .add-btn:hover, .mode-btn:hover { background: #434c5e; }
+    .io-btn, .add-btn, .mode-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 8px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; text-align: center; }
+    .io-btn:hover, .add-btn:hover, .mode-btn:hover { background: #434c5e; }
     .add-btn { background: #2e7d32; border-color: #388e3c; }
     .add-btn:hover { background: #388e3c; }
     .mode-btn { background: #e65100; border-color: #f57c00; }
@@ -58,7 +125,6 @@
     /* MVP Card */
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; }
     .card.overdue { border-color: var(--overdue-color); }
-
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
     .boss-title-container { display: flex; align-items: center; gap: 6px; flex-grow: 1; }
     .boss-name-display { color: var(--text-bright); font-weight: bold; font-size: 14px; cursor: pointer; }
@@ -67,20 +133,17 @@
     .boss-type-tag.mvp { background: #8e24aa; color: #fff; }
     .boss-type-tag.mini { background: #0288d1; color: #fff; }
     .map-display { font-size: 11px; color: #8892b0; text-align: right; }
-
     .card-body { display: flex; gap: 12px; align-items: center; }
     
     /* MVP Icon */
     .mvp-icon { width: 52px; height: 52px; background: #0d0e14; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #4a6fa5; overflow: hidden; border: 1px solid #2a2e45; flex-shrink: 0; text-transform: uppercase; text-align: center; cursor: pointer; }
     .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
-
     .timer-info { flex-grow: 1; }
     .window-tag { font-size: 11px; color: #8892b0; margin-bottom: 2px; display: flex; align-items: center; gap: 3px; }
     .respawn-time-tag { font-size: 11px; color: #638ecb; font-weight: bold; margin-bottom: 4px; }
     .live-timer { font-size: 19px; font-weight: bold; font-family: monospace; color: var(--active-color); }
     .live-timer.overdue { color: var(--overdue-color); animation: pulse 1s infinite alternate; }
     .live-timer.in-window { color: var(--window-color); }
-
     .window-num-input { 
       width: 38px; 
       background: #0d0e14; 
@@ -92,7 +155,6 @@
       padding: 1px;
     }
     .window-num-input:focus { border-color: var(--accent-color); background: #13141f; color: #fff; outline: none; }
-
     .reset-window-btn {
       background: #2b3040;
       color: #8892b0;
@@ -104,13 +166,11 @@
       margin-left: 2px;
     }
     .reset-window-btn:hover { background: var(--accent-color); color: #fff; }
-
     /* Time Inputs */
     .manual-time-container { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
     .manual-time-container label { font-size: 11px; color: #8892b0; }
     .manual-input { width: 75px; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; text-align: center; font-family: monospace; border-radius: 3px; padding: 3px; font-size: 12px; }
     .manual-input:focus { border-color: var(--accent-color); outline: none; }
-
     /* Action Buttons */
     .card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
     .action-btn { background: #2e344e; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
@@ -122,55 +182,72 @@
     .boss-gear-btn { background: #3b4252; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; color: #fff; font-size: 12px; }
     .boss-gear-btn:hover { background: var(--accent-color); }
     .track-toggle { flex-grow: 1; padding: 6px; font-weight: bold; }
-
     /* Modal Styling */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center; z-index: 100; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center; z-index: 200; }
     .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; width: 360px; max-width: 90vw; display: flex; flex-direction: column; gap: 12px; }
     .modal-content h3 { color: var(--text-bright); margin-bottom: 5px; font-size: 15px; }
     .modal-content label { font-size: 11px; color: #8892b0; display: flex; flex-direction: column; gap: 4px; width: 100%; }
     .modal-content input, .modal-content select { background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
-
     @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="nav-tabs">
-      <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">My Farm List</button>
-      <button class="tab-btn" id="tab-mvp" onclick="switchTab('mvp')">MVP Catalog</button>
-      <button class="tab-btn" id="tab-mini" onclick="switchTab('mini')">Mini Boss Catalog</button>
-    </div>
+  <!-- Toggle Sidebar Button -->
+  <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">---</button>
 
-    <!-- Mode Toggle Button -->
-    <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()">🌐 Server Time Mode</button>
+  <div class="app-layout">
+    <!-- Main Boss Grid Section -->
+    <main id="mainContent" class="main-content">
+      <div id="bossGrid" class="boss-grid"></div>
+    </main>
 
-    <div class="server-time-box">
-      <label id="tzLabel" for="utcSelect">Server TZ:</label>
-      <select id="utcSelect" onchange="updateServerTimezone(this.value)">
-        <option value="-8">UTC -8 (PST)</option>
-        <option value="-5">UTC -5 (EST)</option>
-        <option value="0">UTC +0 (GMT)</option>
-        <option value="7">UTC +7 (SEA/TH)</option>
-        <option value="8">UTC +8 (PH/SG)</option>
-        <option value="9">UTC +9 (JST/KST)</option>
-      </select>
-      <span id="serverClock" class="server-clock">00:00:00</span>
-    </div>
+    <!-- Right Collapsible Sidebar Controls -->
+    <aside id="rightSidebar" class="right-sidebar">
+      
+      <!-- 1. Search Bar -->
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
+      </div>
 
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
-    </div>
-    <div class="header-actions">
-      <button class="add-btn" onclick="openAddModal()">➕ Add Boss</button>
-      <button class="audio-btn" onclick="testAudio()">🔊 Test</button>
-      <button class="io-btn" onclick="exportData()">📋 Export</button>
-      <button class="io-btn" onclick="importData()">📥 Import</button>
-    </div>
-  </header>
+      <!-- 2. Navigation Tabs -->
+      <div class="nav-tabs">
+        <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">My Farm List</button>
+        <button class="tab-btn" id="tab-mvp" onclick="switchTab('mvp')">MVP Catalog</button>
+        <button class="tab-btn" id="tab-mini" onclick="switchTab('mini')">Mini Boss Catalog</button>
+      </div>
 
-  <main id="bossGrid" class="boss-grid"></main>
+      <!-- 3. Server Clock & Mode Box -->
+      <div class="sidebar-group">
+        <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()">🌐 Server Time Mode</button>
+        <div class="server-time-box">
+          <label id="tzLabel" for="utcSelect">Server TZ:</label>
+          <select id="utcSelect" onchange="updateServerTimezone(this.value)">
+            <option value="-8">UTC -8 (PST)</option>
+            <option value="-5">UTC -5 (EST)</option>
+            <option value="0">UTC +0 (GMT)</option>
+            <option value="7">UTC +7 (SEA/TH)</option>
+            <option value="8">UTC +8 (PH/SG)</option>
+            <option value="9">UTC +9 (JST/KST)</option>
+          </select>
+          <span id="serverClock" class="server-clock">00:00:00</span>
+        </div>
+      </div>
+
+      <!-- 4. Quick Actions -->
+      <div class="sidebar-group">
+        <button class="add-btn" onclick="openAddModal()">➕ Add Boss</button>
+      </div>
+
+      <!-- 5. System Controls (Side-by-side Export & Import) -->
+      <div class="io-group">
+        <button class="io-btn" onclick="exportData()">📋 Export</button>
+        <button class="io-btn" onclick="importData()">📥 Import</button>
+      </div>
+
+    </aside>
+  </div>
 
   <!-- Add Boss Modal -->
   <div id="addModal" class="modal">
@@ -295,8 +372,7 @@
       { id: "gorynych", mobId: 1885, name: "Gorynych", map: "mosk_dun03", minWindow: 120, maxWindow: 130, type: "mvp" },
       { id: "reginleif", mobId: null, name: "Reginleif", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
       { id: "ingrid", mobId: null, name: "Ingrid", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
-
-      // --- MINI BOSSES --- (Tinanggal ang maling mobId para mag-fallback sa Initial Text Box)
+      // --- MINI BOSSES ---
       { id: "angeling", mobId: 1096, name: "Angeling", map: "pay_fild04", minWindow: 60, maxWindow: 60, type: "mini" },
       { id: "deviling", mobId: 1582, name: "Deviling", map: "pay_fild04", minWindow: 120, maxWindow: 120, type: "mini" },
       { id: "ghostring", mobId: 1120, name: "Ghostring", map: "pay_fild04", minWindow: 113, maxWindow: 113, type: "mini" },
@@ -316,7 +392,6 @@
     let currentTab = 'farm';
     let isEditingInput = false;
     let alertedBosses = new Set();
-
     let state = JSON.parse(localStorage.getItem('ro_mvp_state')) || {
       tracked: ["baphomet", "eddga", "angeling", "ghostring"],
       serverUtcOffset: 8,
@@ -331,6 +406,11 @@
 
     function saveState() {
       localStorage.setItem('ro_mvp_state', JSON.stringify(state));
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('rightSidebar');
+      sidebar.classList.toggle('collapsed');
     }
 
     function toggleTimeMode() {
@@ -377,8 +457,6 @@
         console.log("Audio blocked");
       }
     }
-
-    function testAudio() { playChime(783.99); }
 
     function exportData() {
       const dataStr = JSON.stringify(state);
@@ -451,7 +529,6 @@
       const boss = getAllBosses().find(b => b.id === bossId);
       if (!boss) return;
       const data = getBossData(boss);
-
       document.getElementById('editBossId').value = boss.id;
       document.getElementById('bossSettingsTitle').innerHTML = `&#9881; ${data.name} Settings`;
       document.getElementById('editBossName').value = data.name;
@@ -459,7 +536,6 @@
       document.getElementById('editBossMin').value = data.minWindow;
       document.getElementById('editBossMax').value = data.maxWindow;
       document.getElementById('editBossImg').value = data.imageUrl || '';
-
       document.getElementById('bossSettingsModal').style.display = 'flex';
     }
 
@@ -470,14 +546,12 @@
     function saveBossSettings() {
       const id = document.getElementById('editBossId').value;
       if (!id) return;
-
       if (!state.customData[id]) state.customData[id] = {};
       state.customData[id].name = document.getElementById('editBossName').value.trim();
       state.customData[id].map = document.getElementById('editBossMap').value.trim();
       state.customData[id].minWindow = parseInt(document.getElementById('editBossMin').value) || 0;
       state.customData[id].maxWindow = parseInt(document.getElementById('editBossMax').value) || 0;
       state.customData[id].imageUrl = document.getElementById('editBossImg').value.trim() || null;
-
       saveState();
       closeBossSettingsModal();
       render();
@@ -488,7 +562,6 @@
       if (!id) return;
       const baseBoss = getAllBosses().find(b => b.id === id);
       if (!baseBoss) return;
-
       if (confirm(`Reset ${baseBoss.name} to default settings?`)) {
         if (state.customData[id]) {
           const currentKill = state.customData[id].killTime;
@@ -544,12 +617,9 @@
       const minWindow = parseInt(document.getElementById('newBossMin').value) || 60;
       const maxWindow = parseInt(document.getElementById('newBossMax').value) || 70;
       const imageUrl = document.getElementById('newBossImg').value.trim();
-
       if (!name) { alert("Please enter a Boss Name!"); return; }
-
       const id = "custom_" + Date.now();
       const newBoss = { id, name, map: map || "unknown", minWindow, maxWindow, imageUrl: imageUrl || null, type, isCustom: true };
-
       state.customBosses.push(newBoss);
       state.tracked.push(id);
       saveState();
@@ -574,14 +644,11 @@
       const targetNow = getTargetTime();
       const targetTimeObj = new Date(targetNow.getTime());
       targetTimeObj.setHours(hrs, mins, 0, 0);
-
       if (targetTimeObj.getTime() > targetNow.getTime()) {
         targetTimeObj.setDate(targetTimeObj.getDate() - 1);
       }
-
       const offsetMs = (targetNow.getTime() - Date.now());
       const localEpoch = targetTimeObj.getTime() - offsetMs;
-
       if (!state.customData[id]) state.customData[id] = {};
       state.customData[id].killTime = localEpoch;
       alertedBosses.delete(id);
@@ -598,20 +665,16 @@
     function calculateTimes(boss) {
       const data = getBossData(boss);
       if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", killTimeStr: "", spawnWindowStr: "--:-- - --:--" };
-
       const minSpawnTime = data.killTime + (data.minWindow * 60000);
       const maxSpawnTime = data.killTime + (data.maxWindow * 60000);
       const now = Date.now();
       const diff = minSpawnTime - now;
-
       const localKillDate = new Date(data.killTime);
       const localMinDate = new Date(minSpawnTime);
       const localMaxDate = new Date(maxSpawnTime);
-
       let killDateObj = localKillDate;
       let minDateObj = localMinDate;
       let maxDateObj = localMaxDate;
-
       if (state.displayMode === 'server') {
         const getUtcServerDate = (d) => {
           const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -621,10 +684,8 @@
         minDateObj = getUtcServerDate(localMinDate);
         maxDateObj = getUtcServerDate(localMaxDate);
       }
-
       const killTimeStr = formatTimeWindow(killDateObj);
       const spawnWindowStr = `${formatTimeWindow(minDateObj)} - ${formatTimeWindow(maxDateObj)}`;
-
       if (diff <= 0) {
         const overdueMs = Math.abs(diff);
         const status = now > maxSpawnTime ? "overdue" : "window";
@@ -633,10 +694,8 @@
           alertedBosses.add(boss.id);
           playChime(880);
         }
-
         return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, killTimeStr, spawnWindowStr };
       }
-
       return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", killTimeStr, spawnWindowStr };
     }
 
@@ -656,11 +715,9 @@
 
     function render() {
       document.getElementById('utcSelect').value = state.serverUtcOffset;
-
       const modeBtn = document.getElementById('modeBtn');
       const tzSelect = document.getElementById('utcSelect');
       const tzLabel = document.getElementById('tzLabel');
-
       if (state.displayMode === 'local') {
         modeBtn.innerText = '🏠 My Time Mode';
         modeBtn.style.background = '#0288d1';
@@ -674,11 +731,9 @@
         tzSelect.style.display = 'inline-block';
         tzLabel.innerText = 'Server TZ:';
       }
-
       const grid = document.getElementById('bossGrid');
       const filter = document.getElementById('searchInput').value.toLowerCase();
       const allBosses = getAllBosses();
-
       let list = allBosses.filter(b => {
         const data = getBossData(b);
         const matchesSearch = data.name.toLowerCase().includes(filter) || data.map.toLowerCase().includes(filter);
@@ -688,30 +743,23 @@
         if (currentTab === 'mini') return data.type === 'mini' && matchesSearch;
         return matchesSearch;
       });
-
       if (currentTab === 'farm') {
         list.sort((a, b) => calculateTimes(a).nextMinMs - calculateTimes(b).nextMinMs);
       }
-
       grid.innerHTML = '';
-
       list.forEach(boss => {
         const data = getBossData(boss);
         const timing = calculateTimes(boss);
         const isTracked = state.tracked.includes(boss.id);
-
         const card = document.createElement('div');
         card.className = `card ${timing.status === 'overdue' ? 'overdue' : ''}`;
-
         let imgSrc = data.imageUrl;
         if (!imgSrc && boss.mobId) {
           imgSrc = `https://static.divine-pride.net/images/mobs/png/${boss.mobId}.png`;
         }
-
         const inputLabelStr = state.displayMode === 'local' ? 'Kill (My Time):' : 'Kill (Server):';
         const safeName = data.name.replace(/'/g, "\\'");
         const initials = data.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase();
-
         card.innerHTML = `
           <div class="card-header">
             <div class="boss-title-container">
