@@ -34,11 +34,13 @@
     .server-time-box select { background: #1c1e2e; color: #fff; border: 1px solid var(--border-color); border-radius: 3px; font-size: 11px; padding: 2px 4px; }
     .server-clock { font-family: monospace; font-weight: bold; color: #ffaa00; font-size: 13px; }
 
-    .header-actions { display: flex; gap: 6px; }
-    .audio-btn, .io-btn, .add-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
-    .audio-btn:hover, .io-btn:hover, .add-btn:hover { background: #434c5e; }
+    .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .audio-btn, .io-btn, .add-btn, .mode-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .audio-btn:hover, .io-btn:hover, .add-btn:hover, .mode-btn:hover { background: #434c5e; }
     .add-btn { background: #2e7d32; border-color: #388e3c; }
     .add-btn:hover { background: #388e3c; }
+    .mode-btn { background: #e65100; border-color: #f57c00; }
+    .mode-btn:hover { background: #f57c00; }
 
     /* Grid Layout */
     .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
@@ -57,12 +59,12 @@
     .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
 
     .timer-info { flex-grow: 1; }
-    .window-tag { font-size: 11px; color: #8892b0; margin-bottom: 4px; display: flex; align-items: center; gap: 2px; }
+    .window-tag { font-size: 11px; color: #8892b0; margin-bottom: 2px; display: flex; align-items: center; gap: 2px; }
+    .respawn-time-tag { font-size: 11px; color: #638ecb; font-weight: bold; margin-bottom: 4px; }
     .live-timer { font-size: 19px; font-weight: bold; font-family: monospace; color: var(--active-color); }
     .live-timer.overdue { color: var(--overdue-color); animation: pulse 1s infinite alternate; }
     .live-timer.in-window { color: var(--window-color); }
 
-    /* Window inputs without box borders or arrows */
     .window-num-input { 
       width: 38px; 
       background: transparent; 
@@ -116,8 +118,11 @@
       <button class="tab-btn" id="tab-catalog" onclick="switchTab('catalog')">All Bosses Catalog</button>
     </div>
 
+    <!-- Mode Toggle Button -->
+    <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()">🌐 Server Time Mode</button>
+
     <div class="server-time-box">
-      <label for="utcSelect">Server TZ:</label>
+      <label id="tzLabel" for="utcSelect">Server TZ:</label>
       <select id="utcSelect" onchange="updateServerTimezone(this.value)">
         <option value="-8">UTC -8 (PST)</option>
         <option value="-5">UTC -5 (EST)</option>
@@ -227,15 +232,23 @@
     let state = JSON.parse(localStorage.getItem('ro_mvp_state')) || {
       tracked: ["baphomet", "eddga", "valkyrie_randgris"],
       serverUtcOffset: 8,
+      displayMode: 'server', // 'server' or 'local'
       customData: {},
       customBosses: []
     };
 
     if (state.serverUtcOffset === undefined) state.serverUtcOffset = 8;
     if (!state.customBosses) state.customBosses = [];
+    if (!state.displayMode) state.displayMode = 'server';
 
     function saveState() {
       localStorage.setItem('ro_mvp_state', JSON.stringify(state));
+    }
+
+    function toggleTimeMode() {
+      state.displayMode = state.displayMode === 'server' ? 'local' : 'server';
+      saveState();
+      render();
     }
 
     function updateServerTimezone(val) {
@@ -244,14 +257,17 @@
       render();
     }
 
-    function getServerTime() {
+    function getTargetTime() {
       const now = new Date();
+      if (state.displayMode === 'local') {
+        return now;
+      }
       const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
       return new Date(utcMs + (3600000 * state.serverUtcOffset));
     }
 
     function updateServerClock() {
-      const sDate = getServerTime();
+      const sDate = getTargetTime();
       const h = String(sDate.getHours()).padStart(2, '0');
       const m = String(sDate.getMinutes()).padStart(2, '0');
       const s = String(sDate.getSeconds()).padStart(2, '0');
@@ -293,6 +309,7 @@
         if (parsed.tracked && parsed.customData) {
           state = parsed;
           if (!state.customBosses) state.customBosses = [];
+          if (!state.displayMode) state.displayMode = 'server';
           saveState();
           document.getElementById('utcSelect').value = state.serverUtcOffset;
           render();
@@ -379,7 +396,7 @@
       const newBoss = { id, name, map: map || "unknown", minWindow, maxWindow, imageUrl: imageUrl || null, isCustom: true };
 
       state.customBosses.push(newBoss);
-      state.tracked.push(id); // Automatic na dadagdag sa My Farm List
+      state.tracked.push(id);
       saveState();
       closeAddModal();
       render();
@@ -399,16 +416,16 @@
       if (!/^\d{2}:\d{2}$/.test(val)) return;
       const [hrs, mins] = val.split(':').map(Number);
       
-      const sNow = getServerTime();
-      const sTarget = new Date(sNow.getTime());
-      sTarget.setHours(hrs, mins, 0, 0);
+      const targetNow = getTargetTime();
+      const targetTimeObj = new Date(targetNow.getTime());
+      targetTimeObj.setHours(hrs, mins, 0, 0);
 
-      if (sTarget.getTime() > sNow.getTime()) {
-        sTarget.setDate(sTarget.getDate() - 1);
+      if (targetTimeObj.getTime() > targetNow.getTime()) {
+        targetTimeObj.setDate(targetTimeObj.getDate() - 1);
       }
 
-      const offsetMs = (sNow.getTime() - Date.now());
-      const localEpoch = sTarget.getTime() - offsetMs;
+      const offsetMs = (targetNow.getTime() - Date.now());
+      const localEpoch = targetTimeObj.getTime() - offsetMs;
 
       if (!state.customData[id]) state.customData[id] = {};
       state.customData[id].killTime = localEpoch;
@@ -417,20 +434,42 @@
       render();
     }
 
+    function formatTimeWindow(dateObj) {
+      const h = String(dateObj.getHours()).padStart(2, '0');
+      const m = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
     function calculateTimes(boss) {
       const data = getBossData(boss);
-      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", serverKillTimeStr: "" };
+      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", killTimeStr: "", spawnWindowStr: "--:-- - --:--" };
 
       const minSpawnTime = data.killTime + (data.minWindow * 60000);
       const maxSpawnTime = data.killTime + (data.maxWindow * 60000);
       const now = Date.now();
       const diff = minSpawnTime - now;
 
+      // Calculate displayed dates (Server or Local)
       const localKillDate = new Date(data.killTime);
-      const utcMs = localKillDate.getTime() + (localKillDate.getTimezoneOffset() * 60000);
-      const serverKillDate = new Date(utcMs + (3600000 * state.serverUtcOffset));
+      const localMinDate = new Date(minSpawnTime);
+      const localMaxDate = new Date(maxSpawnTime);
 
-      const serverKillTimeStr = `${String(serverKillDate.getHours()).padStart(2, '0')}:${String(serverKillDate.getMinutes()).padStart(2, '0')}`;
+      let killDateObj = localKillDate;
+      let minDateObj = localMinDate;
+      let maxDateObj = localMaxDate;
+
+      if (state.displayMode === 'server') {
+        const getUtcServerDate = (d) => {
+          const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+          return new Date(utc + (3600000 * state.serverUtcOffset));
+        };
+        killDateObj = getUtcServerDate(localKillDate);
+        minDateObj = getUtcServerDate(localMinDate);
+        maxDateObj = getUtcServerDate(localMaxDate);
+      }
+
+      const killTimeStr = formatTimeWindow(killDateObj);
+      const spawnWindowStr = `${formatTimeWindow(minDateObj)} - ${formatTimeWindow(maxDateObj)}`;
 
       if (diff <= 0) {
         const overdueMs = Math.abs(diff);
@@ -441,10 +480,10 @@
           playChime(880);
         }
 
-        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, serverKillTimeStr };
+        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, killTimeStr, spawnWindowStr };
       }
 
-      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", serverKillTimeStr };
+      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", killTimeStr, spawnWindowStr };
     }
 
     function formatMs(ms) {
@@ -458,9 +497,26 @@
     function render() {
       document.getElementById('utcSelect').value = state.serverUtcOffset;
 
+      const modeBtn = document.getElementById('modeBtn');
+      const tzSelect = document.getElementById('utcSelect');
+      const tzLabel = document.getElementById('tzLabel');
+
+      if (state.displayMode === 'local') {
+        modeBtn.innerText = '🏠 My Time Mode';
+        modeBtn.style.background = '#0288d1';
+        modeBtn.style.borderColor = '#03a9f4';
+        tzSelect.style.display = 'none';
+        tzLabel.innerText = 'Local Time:';
+      } else {
+        modeBtn.innerText = '🌐 Server Time Mode';
+        modeBtn.style.background = '#e65100';
+        modeBtn.style.borderColor = '#f57c00';
+        tzSelect.style.display = 'inline-block';
+        tzLabel.innerText = 'Server TZ:';
+      }
+
       const grid = document.getElementById('bossGrid');
       const filter = document.getElementById('searchInput').value.toLowerCase();
-      
       const allBosses = getAllBosses();
 
       let list = allBosses.filter(b => {
@@ -483,11 +539,12 @@
         const card = document.createElement('div');
         card.className = `card ${timing.status === 'overdue' ? 'overdue' : ''}`;
 
-        // Image Selection Logic
         let imgSrc = data.imageUrl;
         if (!imgSrc && boss.mobId) {
           imgSrc = `https://static.divine-pride.net/images/mobs/png/${boss.mobId}.png`;
         }
+
+        const inputLabelStr = state.displayMode === 'local' ? 'Kill (My Time):' : 'Kill (Server):';
 
         card.innerHTML = `
           <div class="card-header">
@@ -508,10 +565,11 @@
                 mins
               </div>
               <div class="live-timer ${timing.status}">${timing.displayStr}</div>
+              <div class="respawn-time-tag">⏱️ Respawn: ${timing.spawnWindowStr}</div>
               ${currentTab === 'farm' ? `
                 <div class="manual-time-container">
-                  <label>Kill (Server):</label>
-                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.serverKillTimeStr}"
+                  <label>${inputLabelStr}</label>
+                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.killTimeStr}"
                     onfocus="isEditingInput=true" 
                     onblur="isEditingInput=false; handleManualTime('${boss.id}', this.value)"
                     onkeydown="if(event.key==='Enter') { this.blur(); }">
