@@ -6,20 +6,58 @@
   <title>Ragnarok Online MVP & Mini Boss Respawn Tracker</title>
   <style>
     :root {
-      --bg-color: #12141c;
-      --card-bg: #1c1e2e;
-      --border-color: #2e344e;
-      --accent-color: #4a6fa5;
-      --text-main: #d1d5db;
+      --bg-color: #080a10;
+      --card-bg: rgba(12, 16, 28, 0.88);
+      --card-border: rgba(180, 215, 255, 0.25);
+      --border-color: #2a2f45;
+      --accent-color: #5c80bc;
+      --accent-glow: rgba(147, 180, 240, 0.5);
+      --text-main: #c9d1d9;
       --text-bright: #ffffff;
-      --overdue-color: #ff4d4d;
-      --window-color: #ffaa00;
-      --active-color: #4caf50;
+      --overdue-color: #ff5252;
+      --window-color: #ffd166;
+      --active-color: #06d6a0;
       --sidebar-width: 280px;
+      --valkyrie-white: #e0f2fe;
+      --valkyrie-gold: #f4d06f;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); font-size: 13px; overflow-x: hidden; }
     
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
+    
+body { 
+  background-color: var(--bg-color); 
+  color: var(--text-main); 
+  font-size: 13px; 
+  overflow-x: hidden;
+  min-height: 100vh;
+  
+  /* Adjusted Width & Brighter Background */
+  background-image: 
+    linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
+    url("valkyrie.jpg");
+  background-size: 100% auto;        /* Fit sa buong width ng screen */
+  background-position: center top;  /* Nakatutok sa taas/gitna ang Valkyrie */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body {
+  background-color: var(--bg-color); 
+  color: var(--text-main); 
+  font-size: 13px; 
+  overflow-x: hidden;
+  min-height: 100vh;
+  
+  /* Saktong Fitted sa Buong Screen */
+  background-image: 
+    linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
+    url("valkyrie.jpg");
+  background-size: cover;           /* Automatic na i-fifit ang picture sa buong screen */
+  background-position: center top;  /* Nakatutok sa gitna at taas */
+  background-repeat: no-repeat;     /* Walang paulit-ulit na duplicate */
+  background-attachment: fixed;     /* Nakabaon ang background habang nag-sscroll */
+}
+
     /* Hide up/down arrow (spin buttons) globally for ALL number inputs */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
@@ -40,17 +78,19 @@
     /* Left Main Content (Boss Grid Area) */
     .main-content {
       flex: 1;
-      padding: 15px;
-      transition: margin-right 0.3s ease;
-      width: 100%;
+      padding: 20px;
+      margin-right: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
     }
 
-    /* Right Sidebar Controls */
+    /* Fixed Right Sidebar Controls */
     .right-sidebar {
       width: var(--sidebar-width);
-      background: #181a26;
-      border-left: 1px solid var(--border-color);
-      padding: 15px;
+      background: rgba(10, 12, 20, 0.92);
+      backdrop-filter: blur(14px);
+      border-left: 1px solid var(--card-border);
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.8);
+      padding: 18px 15px;
       display: flex;
       flex-direction: column;
       gap: 15px;
@@ -59,35 +99,8 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
-      transition: transform 0.3s ease;
       z-index: 90;
       box-sizing: border-box;
-    }
-
-    /* Collapsed Sidebar State */
-    .right-sidebar.collapsed {
-      transform: translateX(100%);
-    }
-
-    /* Toggle Sidebar Button */
-    .sidebar-toggle-btn {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 100;
-      background: #25283b;
-      color: var(--text-bright);
-      border: 1px solid var(--border-color);
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-      letter-spacing: -1px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    }
-    .sidebar-toggle-btn:hover {
-      background: var(--accent-color);
     }
 
     /* Sidebar Sections */
@@ -98,104 +111,257 @@
     }
     
     .nav-tabs { display: flex; flex-direction: column; gap: 6px; }
-    .tab-btn { background: #25283b; color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; text-align: left; }
-    .tab-btn.active { background: var(--accent-color); color: #fff; border-color: #638ecb; }
+    .tab-btn { 
+      background: rgba(25, 29, 45, 0.7); 
+      color: var(--text-main); 
+      border: 1px solid var(--card-border); 
+      padding: 9px 12px; 
+      cursor: pointer; 
+      border-radius: 5px; 
+      font-weight: bold; 
+      text-align: left; 
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      background: rgba(45, 53, 80, 0.8);
+      color: #fff;
+    }
+    .tab-btn.active { 
+      background: linear-gradient(135deg, rgba(74, 111, 165, 0.85), rgba(40, 70, 120, 0.95)); 
+      color: #fff; 
+      border-color: rgba(180, 215, 255, 0.5);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
     
     .search-box { width: 100%; }
-    .search-box input { width: 100%; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 8px 10px; border-radius: 4px; }
+    .search-box input { 
+      width: 100%; 
+      background: rgba(10, 12, 18, 0.85); 
+      border: 1px solid var(--card-border); 
+      color: #fff; 
+      padding: 8px 10px; 
+      border-radius: 5px;
+      transition: border 0.2s;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
     
-    .server-time-box { display: flex; flex-direction: column; gap: 8px; background: #0d0e14; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); align-items: center; text-align: center; }
+    .server-time-box { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      background: rgba(10, 12, 18, 0.7); 
+      padding: 10px; 
+      border-radius: 5px; 
+      border: 1px solid var(--card-border); 
+      align-items: center; 
+      text-align: center; 
+    }
     .server-time-box label { font-size: 11px; color: #8892b0; font-weight: bold; }
-    .server-time-box select { background: #1c1e2e; color: #fff; border: 1px solid var(--border-color); border-radius: 3px; font-size: 11px; padding: 4px; width: 100%; }
-    .server-clock { font-family: monospace; font-weight: bold; color: #ffaa00; font-size: 16px; margin-top: 2px; }
+    .server-time-box select { 
+      background: #181a26; 
+      color: #fff; 
+      border: 1px solid var(--border-color); 
+      border-radius: 3px; 
+      font-size: 11px; 
+      padding: 4px; 
+      width: 100%; 
+    }
+    .server-clock { 
+      font-family: monospace; 
+      font-weight: bold; 
+      color: var(--valkyrie-gold); 
+      font-size: 17px; 
+      margin-top: 2px;
+      text-shadow: 0 0 10px rgba(244, 208, 111, 0.4);
+    }
     
     .io-group { display: flex; gap: 6px; }
     .io-group .io-btn { flex: 1; }
 
-    .io-btn, .add-btn, .mode-btn { background: #3b4252; color: #fff; border: 1px solid #4c566a; padding: 8px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; width: 100%; text-align: center; }
-    .io-btn:hover, .add-btn:hover, .mode-btn:hover { background: #434c5e; }
-    .add-btn { background: #2e7d32; border-color: #388e3c; }
-    .add-btn:hover { background: #388e3c; }
-    .mode-btn { background: #e65100; border-color: #f57c00; }
-    .mode-btn:hover { background: #f57c00; }
+    .io-btn, .add-btn, .mode-btn { 
+      background: rgba(40, 46, 68, 0.8); 
+      color: #fff; 
+      border: 1px solid var(--card-border); 
+      padding: 8px 10px; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      font-size: 11px; 
+      font-weight: bold; 
+      width: 100%; 
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .io-btn:hover, .add-btn:hover, .mode-btn:hover { 
+      filter: brightness(1.2);
+      box-shadow: 0 0 12px rgba(255,255,255,0.15);
+    }
+    .add-btn { 
+      background: linear-gradient(135deg, #1b5e20, #2e7d32); 
+      border-color: #388e3c; 
+    }
+    .mode-btn { 
+      background: linear-gradient(135deg, #bf360c, #e65100); 
+      border-color: #f57c00; 
+    }
 
     /* Grid Layout */
-    .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+    .boss-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
+      gap: 16px; 
+    }
     
-    /* MVP Card */
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; position: relative; }
-    .card.overdue { border-color: var(--overdue-color); }
+    /* MVP Card Style with Lift & Selection Glow Effects */
+    .card { 
+      background: var(--card-bg); 
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border); 
+      border-radius: 8px; 
+      padding: 12px 14px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      position: relative; 
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(180, 215, 255, 0.6);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 18px var(--accent-glow);
+    }
+    .card.overdue { 
+      border-color: var(--overdue-color); 
+      box-shadow: 0 0 18px rgba(255, 77, 77, 0.4);
+    }
+    .card.overdue:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 22px rgba(255, 77, 77, 0.7);
+    }
+    
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
     .boss-title-container { display: flex; align-items: center; gap: 6px; flex-grow: 1; }
-    .boss-name-display { color: var(--text-bright); font-weight: bold; font-size: 14px; cursor: pointer; }
-    .boss-name-display:hover { text-decoration: underline; color: #638ecb; }
-    .boss-type-tag { font-size: 10px; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
-    .boss-type-tag.mvp { background: #8e24aa; color: #fff; }
-    .boss-type-tag.mini { background: #0288d1; color: #fff; }
-    .map-display { font-size: 11px; color: #8892b0; text-align: right; }
+    .boss-name-display { 
+      color: var(--text-bright); 
+      font-weight: bold; 
+      font-size: 14px; 
+      cursor: pointer; 
+      transition: color 0.2s;
+    }
+    .boss-name-display:hover { color: var(--valkyrie-white); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
+    
+    .boss-type-tag { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; letter-spacing: 0.5px; }
+    .boss-type-tag.mvp { background: linear-gradient(135deg, #6a1b9a, #8e24aa); color: #fff; box-shadow: 0 0 6px rgba(142, 36, 170, 0.4); }
+    .boss-type-tag.mini { background: linear-gradient(135deg, #0277bd, #0288d1); color: #fff; box-shadow: 0 0 6px rgba(2, 136, 209, 0.4); }
+    
+    .map-display { font-size: 11px; color: #8892b0; text-align: right; font-weight: 500; }
     .card-body { display: flex; gap: 12px; align-items: center; }
     
-    /* MVP Icon */
-    .mvp-icon { width: 52px; height: 52px; background: #0d0e14; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #4a6fa5; overflow: hidden; border: 1px solid #2a2e45; flex-shrink: 0; text-transform: uppercase; text-align: center; cursor: pointer; }
+    /* MVP Icon Display */
+    .mvp-icon { 
+      width: 54px; 
+      height: 54px; 
+      background: rgba(10, 12, 18, 0.85); 
+      border-radius: 6px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 11px; 
+      font-weight: bold; 
+      color: var(--accent-color); 
+      overflow: hidden; 
+      border: 1px solid var(--card-border); 
+      flex-shrink: 0; 
+      text-transform: uppercase; 
+      text-align: center; 
+      cursor: pointer; 
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .mvp-icon:hover {
+      border-color: var(--valkyrie-gold);
+      box-shadow: inset 0 0 8px rgba(244, 208, 111, 0.3);
+    }
     .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
+    
     .timer-info { flex-grow: 1; }
     .window-tag { font-size: 11px; color: #8892b0; margin-bottom: 2px; display: flex; align-items: center; gap: 3px; }
-    .respawn-time-tag { font-size: 11px; color: #638ecb; font-weight: bold; margin-bottom: 4px; }
-    .live-timer { font-size: 19px; font-weight: bold; font-family: monospace; color: var(--active-color); }
-    .live-timer.overdue { color: var(--overdue-color); animation: pulse 1s infinite alternate; }
-    .live-timer.in-window { color: var(--window-color); }
+    .respawn-time-tag { font-size: 11px; color: #82aaff; font-weight: bold; margin-bottom: 4px; }
+    
+    .live-timer { font-size: 19px; font-weight: bold; font-family: monospace; color: var(--active-color); text-shadow: 0 0 8px rgba(6, 214, 160, 0.4); }
+    .live-timer.overdue { color: var(--overdue-color); text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); animation: pulse 1s infinite alternate; }
+    .live-timer.in-window { color: var(--window-color); text-shadow: 0 0 10px rgba(255, 209, 102, 0.6); }
+    
     .window-num-input { 
       width: 38px; 
-      background: #0d0e14; 
-      border: 1px solid var(--border-color); 
-      color: #8892b0; 
+      background: rgba(10, 12, 18, 0.85); 
+      border: 1px solid var(--card-border); 
+      color: #a0aec0; 
       font-size: 11px; 
       text-align: center; 
       border-radius: 3px;
       padding: 1px;
     }
     .window-num-input:focus { border-color: var(--accent-color); background: #13141f; color: #fff; outline: none; }
+    
     .reset-window-btn {
-      background: #2b3040;
+      background: rgba(40, 46, 68, 0.6);
       color: #8892b0;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--card-border);
       border-radius: 3px;
       font-size: 10px;
       padding: 1px 4px;
       cursor: pointer;
       margin-left: 2px;
+      transition: all 0.2s;
     }
     .reset-window-btn:hover { background: var(--accent-color); color: #fff; }
+
     /* Time Inputs */
     .manual-time-container { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
     .manual-time-container label { font-size: 11px; color: #8892b0; }
-    .manual-input { width: 75px; background: #0d0e14; border: 1px solid var(--border-color); color: #fff; text-align: center; font-family: monospace; border-radius: 3px; padding: 3px; font-size: 12px; }
-    .manual-input:focus { border-color: var(--accent-color); outline: none; }
+    .manual-input { 
+      width: 75px; 
+      background: rgba(10, 12, 18, 0.85); 
+      border: 1px solid var(--card-border); 
+      color: #fff; 
+      text-align: center; 
+      font-family: monospace; 
+      border-radius: 3px; 
+      padding: 3px; 
+      font-size: 12px; 
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .manual-input:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 8px var(--accent-glow); }
+
     /* Action Buttons */
     .card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
-    .action-btn { background: #2e344e; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
-    .action-btn:hover { background: #3b4252; }
-    .reset-btn { background: #2e7d32; }
-    .reset-btn:hover { background: #388e3c; }
-    .clear-btn { background: #c62828; }
-    .clear-btn:hover { background: #d32f2f; }
-    .boss-gear-btn { background: #3b4252; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; color: #fff; font-size: 12px; }
-    .boss-gear-btn:hover { background: var(--accent-color); }
+    .action-btn { background: #2a2f45; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.2s, transform 0.1s; }
+    .action-btn:hover { background: #3b4260; transform: translateY(-1px); }
+    .action-btn:active { transform: translateY(0); }
+    .reset-btn { background: #1b5e20; }
+    .reset-btn:hover { background: #2e7d32; }
+    .clear-btn { background: #b71c1c; }
+    .clear-btn:hover { background: #c62828; }
+    .boss-gear-btn { background: #2a2f45; padding: 5px 8px; border-radius: 4px; cursor: pointer; border: none; color: #fff; font-size: 12px; transition: all 0.2s; }
+    .boss-gear-btn:hover { background: var(--accent-color); transform: translateY(-1px); }
     .track-toggle { flex-grow: 1; padding: 6px; font-weight: bold; }
+
     /* Modal Styling */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center; z-index: 200; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; width: 360px; max-width: 90vw; display: flex; flex-direction: column; gap: 12px; }
-    .modal-content h3 { color: var(--text-bright); margin-bottom: 5px; font-size: 15px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 200; }
+    .modal-content { background: #161927; border: 1px solid var(--card-border); padding: 20px; border-radius: 8px; width: 360px; max-width: 90vw; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(180, 215, 255, 0.15); }
+    .modal-content h3 { color: var(--valkyrie-white); margin-bottom: 5px; font-size: 15px; }
     .modal-content label { font-size: 11px; color: #8892b0; display: flex; flex-direction: column; gap: 4px; width: 100%; }
-    .modal-content input, .modal-content select { background: #0d0e14; border: 1px solid var(--border-color); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
+    .modal-content input, .modal-content select { background: #0d0e14; border: 1px solid var(--card-border); color: #fff; padding: 7px 9px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
-    @keyframes pulse { from { opacity: 1; } to { opacity: 0.6; } }
+    
+    @keyframes pulse { from { opacity: 1; } to { opacity: 0.5; } }
   </style>
 </head>
 <body>
-
-  <!-- Toggle Sidebar Button -->
-  <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">---</button>
 
   <div class="app-layout">
     <!-- Main Boss Grid Section -->
@@ -203,9 +369,9 @@
       <div id="bossGrid" class="boss-grid"></div>
     </main>
 
-    <!-- Right Collapsible Sidebar Controls -->
+    <!-- Right Fixed Sidebar Controls -->
     <aside id="rightSidebar" class="right-sidebar">
-      
+
       <!-- 1. Search Bar -->
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
@@ -220,7 +386,7 @@
 
       <!-- 3. Server Clock & Mode Box -->
       <div class="sidebar-group">
-        <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()">🌐 Server Time Mode</button>
+        <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()"> Server Time Mode</button>
         <div class="server-time-box">
           <label id="tzLabel" for="utcSelect">Server TZ:</label>
           <select id="utcSelect" onchange="updateServerTimezone(this.value)">
@@ -237,13 +403,13 @@
 
       <!-- 4. Quick Actions -->
       <div class="sidebar-group">
-        <button class="add-btn" onclick="openAddModal()">➕ Add Boss</button>
+        <button class="add-btn" onclick="openAddModal()"> Add Boss</button>
       </div>
 
-      <!-- 5. System Controls (Side-by-side Export & Import) -->
+      <!-- 5. System Controls (Export & Import) -->
       <div class="io-group">
-        <button class="io-btn" onclick="exportData()">📋 Export</button>
-        <button class="io-btn" onclick="importData()">📥 Import</button>
+        <button class="io-btn" onclick="exportData()"> Export</button>
+        <button class="io-btn" onclick="importData()"> Import</button>
       </div>
 
     </aside>
@@ -406,11 +572,6 @@
 
     function saveState() {
       localStorage.setItem('ro_mvp_state', JSON.stringify(state));
-    }
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('rightSidebar');
-      sidebar.classList.toggle('collapsed');
     }
 
     function toggleTimeMode() {
@@ -688,7 +849,7 @@
       const spawnWindowStr = `${formatTimeWindow(minDateObj)} - ${formatTimeWindow(maxDateObj)}`;
       if (diff <= 0) {
         const overdueMs = Math.abs(diff);
-        const status = now > maxSpawnTime ? "overdue" : "window";
+        const status = now > maxSpawnTime ? "overdue" : "in-window";
         
         if (!alertedBosses.has(boss.id)) {
           alertedBosses.add(boss.id);
@@ -719,14 +880,14 @@
       const tzSelect = document.getElementById('utcSelect');
       const tzLabel = document.getElementById('tzLabel');
       if (state.displayMode === 'local') {
-        modeBtn.innerText = '🏠 My Time Mode';
-        modeBtn.style.background = '#0288d1';
+        modeBtn.innerText = ' My Time Mode';
+        modeBtn.style.background = 'linear-gradient(135deg, #0277bd, #0288d1)';
         modeBtn.style.borderColor = '#03a9f4';
         tzSelect.style.display = 'none';
         tzLabel.innerText = 'Local Time:';
       } else {
-        modeBtn.innerText = '🌐 Server Time Mode';
-        modeBtn.style.background = '#e65100';
+        modeBtn.innerText = ' Server Time Mode';
+        modeBtn.style.background = 'linear-gradient(135deg, #bf360c, #e65100)';
         modeBtn.style.borderColor = '#f57c00';
         tzSelect.style.display = 'inline-block';
         tzLabel.innerText = 'Server TZ:';
@@ -778,10 +939,10 @@
                 - 
                 [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
                 mins
-                <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">↻</button>
+                <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">?</button>
               </div>
               <div class="live-timer ${timing.status}">${timing.displayStr}</div>
-              <div class="respawn-time-tag">⏱️ Respawn: ${timing.spawnWindowStr}</div>
+              <div class="respawn-time-tag"> Respawn: ${timing.spawnWindowStr}</div>
               ${currentTab === 'farm' ? `
                 <div class="manual-time-container">
                   <label>${inputLabelStr}</label>
@@ -796,13 +957,13 @@
           <div class="card-actions">
             <button class="boss-gear-btn" title="Edit Boss Settings" onclick="openBossSettings('${boss.id}')">&#9881;</button>
             ${currentTab === 'farm' ? `
-              <button class="action-btn reset-btn" title="Quick Reset Kill Timer" onclick="resetTimer('${boss.id}')">↻ Reset</button>
-              <button class="action-btn clear-btn" title="Clear Kill Timer" onclick="clearTimer('${boss.id}')">✕ Clear</button>
+              <button class="action-btn reset-btn" title="Quick Reset Kill Timer" onclick="resetTimer('${boss.id}')"> Reset</button>
+              <button class="action-btn clear-btn" title="Clear Kill Timer" onclick="clearTimer('${boss.id}')"> Clear</button>
             ` : `
               <button class="action-btn track-toggle ${isTracked ? 'clear-btn' : 'reset-btn'}" onclick="toggleTrack('${boss.id}')">
                 ${isTracked ? 'Remove from Farm' : '+ Add to Farm'}
               </button>
-              ${boss.isCustom ? `<button class="action-btn clear-btn" title="Delete Boss" onclick="deleteCustomBoss('${boss.id}')">🗑️</button>` : ''}
+              ${boss.isCustom ? `<button class="action-btn clear-btn" title="Delete Boss" onclick="deleteCustomBoss('${boss.id}')"></button>` : ''}
             `}
           </div>
         `;
