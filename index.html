@@ -123,9 +123,9 @@
       <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
     </div>
     <div class="header-actions">
-      <button class="audio-btn" onclick="testAudio()">?? Test</button>
-      <button class="io-btn" onclick="exportData()">?? Export</button>
-      <button class="io-btn" onclick="importData()">?? Import</button>
+      <button class="audio-btn" onclick="testAudio()">🔊 Test</button>
+      <button class="io-btn" onclick="exportData()">📋 Export</button>
+      <button class="io-btn" onclick="importData()">📥 Import</button>
     </div>
   </header>
 
@@ -425,8 +425,8 @@
           </div>
           <div class="card-actions">
             ${currentTab === 'farm' ? `
-              <button class="action-btn reset-btn" title="Quick Reset" onclick="resetTimer('${boss.id}')">? Reset</button>
-              <button class="action-btn clear-btn" title="Clear Timer" onclick="clearTimer('${boss.id}')">? Clear</button>
+              <button class="action-btn reset-btn" title="Quick Reset" onclick="resetTimer('${boss.id}')">↻ Reset</button>
+              <button class="action-btn clear-btn" title="Clear Timer" onclick="clearTimer('${boss.id}')">✕ Clear</button>
             ` : `
               <button class="action-btn track-toggle ${isTracked ? 'clear-btn' : 'reset-btn'}" onclick="toggleTrack('${boss.id}')">
                 ${isTracked ? 'Remove from Farm' : '+ Add to Farm'}
