@@ -938,13 +938,13 @@
               ${imgSrc ? `<img src="${imgSrc}" alt="${data.name}" onerror="handleImageError(this, '${safeName}')">` : `<span>${initials}</span>`}
             </div>
             <div class="timer-info">
-              <div class="window-tag">
-                [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
-                - 
-                [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
-                mins
-                <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">?</button>
-              </div>
+          <div class="window-tag">
+  [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
+  - 
+  [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
+  mins
+  <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">&#8634;</button>
+</div>
               <div class="live-timer ${timing.status}">${timing.displayStr}</div>
               <div class="respawn-time-tag"> Respawn: ${timing.spawnWindowStr}</div>
               ${currentTab === 'farm' ? `
