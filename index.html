@@ -24,39 +24,22 @@
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tahoma', 'Segoe UI', sans-serif; }
     
-body { 
-  background-color: var(--bg-color); 
-  color: var(--text-main); 
-  font-size: 13px; 
-  overflow-x: hidden;
-  min-height: 100vh;
-  
-  /* Adjusted Width & Brighter Background */
-  background-image: 
-    linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
-    url("valkyrie.jpg");
-  background-size: 100% auto;        /* Fit sa buong width ng screen */
-  background-position: center top;  /* Nakatutok sa taas/gitna ang Valkyrie */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
-body {
-  background-color: var(--bg-color); 
-  color: var(--text-main); 
-  font-size: 13px; 
-  overflow-x: hidden;
-  min-height: 100vh;
-  
-  /* Saktong Fitted sa Buong Screen */
-  background-image: 
-    linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
-    url("valkyrie.jpg");
-  background-size: cover;           /* Automatic na i-fifit ang picture sa buong screen */
-  background-position: center top;  /* Nakatutok sa gitna at taas */
-  background-repeat: no-repeat;     /* Walang paulit-ulit na duplicate */
-  background-attachment: fixed;     /* Nakabaon ang background habang nag-sscroll */
-}
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-main); 
+      font-size: 13px; 
+      overflow-x: hidden;
+      min-height: 100vh;
+      
+      /* Saktong Fitted sa Buong Screen */
+      background-image: 
+        linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
+        url("valkyrie.jpg");
+      background-size: cover;           /* Automatic na i-fifit ang picture sa buong screen */
+      background-position: center top;  /* Nakatutok sa gitna at taas */
+      background-repeat: no-repeat;     /* Walang paulit-ulit na duplicate */
+      background-attachment: fixed;     /* Nakabaon ang background habang nag-sscroll */
+    }
 
     /* Hide up/down arrow (spin buttons) globally for ALL number inputs */
     input[type="number"]::-webkit-outer-spin-button,
@@ -390,12 +373,33 @@ body {
         <div class="server-time-box">
           <label id="tzLabel" for="utcSelect">Server TZ:</label>
           <select id="utcSelect" onchange="updateServerTimezone(this.value)">
-            <option value="-8">UTC -8 (PST)</option>
-            <option value="-5">UTC -5 (EST)</option>
-            <option value="0">UTC +0 (GMT)</option>
-            <option value="7">UTC +7 (SEA/TH)</option>
-            <option value="8">UTC +8 (PH/SG)</option>
-            <option value="9">UTC +9 (JST/KST)</option>
+            <option value="-12">UTC -12 (Baker Island)</option>
+            <option value="-11">UTC -11 (American Samoa / Niue)</option>
+            <option value="-10">UTC -10 (Hawaii / HST)</option>
+            <option value="-9">UTC -9 (Alaska / AKST)</option>
+            <option value="-8">UTC -8 (Pacific Time / PST)</option>
+            <option value="-7">UTC -7 (Mountain Time / MST)</option>
+            <option value="-6">UTC -6 (Central Time / CST)</option>
+            <option value="-5">UTC -5 (Eastern Time / EST)</option>
+            <option value="-4">UTC -4 (Atlantic Time / AST / Manaus)</option>
+            <option value="-3">UTC -3 (Brazil / Argentina / ART)</option>
+            <option value="-2">UTC -2 (South Georgia / Mid-Atlantic)</option>
+            <option value="-1">UTC -1 (Azores / Cape Verde)</option>
+            <option value="0">UTC +0 (GMT / London / Lisbon)</option>
+            <option value="1">UTC +1 (Central Europe / CET / Paris / Berlin)</option>
+            <option value="2">UTC +2 (Eastern Europe / EET / Cairo / Athens)</option>
+            <option value="3">UTC +3 (Moscow / Istanbul / Saudi Arabia)</option>
+            <option value="4">UTC +4 (Dubai / UAE / Gulf Standard)</option>
+            <option value="5">UTC +5 (Pakistan / PKT / Tashkent)</option>
+            <option value="6">UTC +6 (Bangladesh / BST / Astana)</option>
+            <option value="7">UTC +7 (Thailand / Vietnam / Jakarta / ICT)</option>
+            <option value="8" selected>UTC +8 (Philippines / SG / China / PHT)</option>
+            <option value="9">UTC +9 (Japan / South Korea / JST / KST)</option>
+            <option value="10">UTC +10 (Australian Eastern / AEST / Guam)</option>
+            <option value="11">UTC +11 (Solomon Islands / New Caledonia)</option>
+            <option value="12">UTC +12 (New Zealand / Fiji / NZST)</option>
+            <option value="13">UTC +13 (Tonga / Phoenix Islands)</option>
+            <option value="14">UTC +14 (Line Islands / Kiritimati)</option>
           </select>
           <span id="serverClock" class="server-clock">00:00:00</span>
         </div>
