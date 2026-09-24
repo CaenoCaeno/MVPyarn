@@ -449,22 +449,15 @@
       { id: "nidhoggr_shadow", mobId: 2022, name: "Nidhoggr's Shadow", map: "nyd_dun02", minWindow: 300, maxWindow: 310, type: "mvp" },
       { id: "boitata", mobId: 2068, name: "Boitata", map: "bra_dun02", minWindow: 120, maxWindow: 130, type: "mvp" },
       { id: "gorynych", mobId: 1885, name: "Gorynych", map: "mosk_dun03", minWindow: 120, maxWindow: 130, type: "mvp" },
-      { id: "reginleif", mobId: null, name: "Reginleif", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
-      { id: "ingrid", mobId: null, name: "Ingrid", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
+      { id: "reginleif", mobId: 20610, name: "Reginleif", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
+      { id: "ingrid", mobId: 20611, name: "Ingrid", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
       { id: "angeling", mobId: 1096, name: "Angeling", map: "pay_fild04", minWindow: 60, maxWindow: 60, type: "mini" },
       { id: "deviling", mobId: 1582, name: "Deviling", map: "pay_fild04", minWindow: 120, maxWindow: 120, type: "mini" },
       { id: "ghostring", mobId: 1120, name: "Ghostring", map: "pay_fild04", minWindow: 113, maxWindow: 113, type: "mini" },
-      { id: "mastering", mobId: null, name: "Mastering", map: "pay_fild04", minWindow: 60, maxWindow: 60, type: "mini" },
-      { id: "dragon_fly", mobId: null, name: "Dragon Fly", map: "moc_fild18", minWindow: 60, maxWindow: 60, type: "mini" },
-      { id: "vocal", mobId: null, name: "Vocal", map: "prt_fild03", minWindow: 60, maxWindow: 60, type: "mini" },
-      { id: "eclipse", mobId: null, name: "Eclipse", map: "prt_fild02", minWindow: 30, maxWindow: 30, type: "mini" },
-      { id: "toad", mobId: null, name: "Toad", map: "cmd_fild03", minWindow: 60, maxWindow: 60, type: "mini" },
-      { id: "chimera", mobId: null, name: "Chimera", map: "gl_cas02", minWindow: 240, maxWindow: 240, type: "mini" },
-      { id: "gryphon", mobId: null, name: "Gryphon", map: "cmd_fild08", minWindow: 60, maxWindow: 60, type: "mini" },
-      { id: "vagabond_wolf", mobId: null, name: "Vagabond Wolf", map: "moc_fild03", minWindow: 30, maxWindow: 30, type: "mini" },
-      { id: "cat_o_nine_tails", mobId: null, name: "Cat O' Nine Tails", map: "pay_dun04", minWindow: 120, maxWindow: 120, type: "mini" },
-      { id: "mutant_dragon", mobId: null, name: "Mutant Dragonoid", map: "hu_fild05", minWindow: 30, maxWindow: 30, type: "mini" },
-      { id: "executrix", mobId: null, name: "Executioner", map: "gl_cas02", minWindow: 120, maxWindow: 120, type: "mini" }
+      { id: "dragon_fly", mobId: 1091, name: "Dragon Fly", map: "moc_fild18", minWindow: 60, maxWindow: 60, type: "mini" },
+      { id: "cat_o_nine_tails", mobId: 1307, name: "Cat O' Nine Tails", map: "pay_dun04", minWindow: 120, maxWindow: 120, type: "mini" },
+      { id: "mutant_dragon", mobId: 1260, name: "Mutant Dragonoid", map: "hu_fild05", minWindow: 30, maxWindow: 30, type: "mini" },
+      { id: "executrix", mobId: 1208, name: "Executioner", map: "gl_cas02", minWindow: 120, maxWindow: 120, type: "mini" }
     ];
 
     let currentTab = 'farm';
@@ -704,7 +697,6 @@
       }
     }
 
-    /* Fixed Smooth Auto-Select & Non-jumping Input Handlers */
     function handleFieldFocus(elem) {
       elem.setAttribute('data-editing', 'true');
       setTimeout(() => elem.select(), 10);
@@ -724,16 +716,14 @@
         const minElem = document.getElementById(`min_${id}`);
         if (minElem) {
           minElem.focus();
-          setTimeout(() => minElem.select(), 10); // Auto-highlight minutes WITHOUT deleting
+          setTimeout(() => minElem.select(), 10);
         }
       }
     }
 
     function handleMinKeypress(elem, id, event) {
-      // Magju-jump LALANG sa AM/PM kapag ikaw mismo ang nag-type ng digit sa loob ng MM input
       if (/^[0-9]$/.test(event.key)) {
         const selectedText = window.getSelection().toString();
-        // Pag na-select all/highlight ang buong input o 1 digit na lang natitira bago mag double digit
         if (selectedText.length === elem.value.length || elem.value.length >= 1) {
           setTimeout(() => {
             if (elem.value.length >= 2) {
@@ -763,6 +753,7 @@
         saveManualTime(id);
       } else if (event.key === 'Enter') {
         saveManualTime(id);
+        elem.blur(); // Mag-a-unfocus / mag-le-leave na ang selection kapag pino-press ang Enter
       }
     }
 
