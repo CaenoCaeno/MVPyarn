@@ -39,32 +39,16 @@
       background-attachment: fixed;
     }
 
-    /* Hide spin buttons globally */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
+    input[type="number"] { -moz-appearance: textfield; }
 
-    /* App Layout */
-    .app-layout {
-      display: flex;
-      min-height: 100vh;
-      position: relative;
-    }
+    .app-layout { display: flex; min-height: 100vh; position: relative; }
+    .main-content { flex: 1; padding: 20px; margin-right: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
 
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      padding: 20px;
-      margin-right: var(--sidebar-width);
-      width: calc(100% - var(--sidebar-width));
-    }
-
-    /* Right Sidebar Controls */
     .right-sidebar {
       width: var(--sidebar-width);
       background: rgba(10, 12, 20, 0.92);
@@ -84,12 +68,7 @@
       box-sizing: border-box;
     }
 
-    .sidebar-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
+    .sidebar-group { display: flex; flex-direction: column; gap: 8px; }
     .nav-tabs { display: flex; flex-direction: column; gap: 6px; }
     .tab-btn { 
       background: rgba(25, 29, 45, 0.7); 
@@ -102,10 +81,7 @@
       text-align: left; 
       transition: all 0.2s ease;
     }
-    .tab-btn:hover {
-      background: rgba(45, 53, 80, 0.8);
-      color: #fff;
-    }
+    .tab-btn:hover { background: rgba(45, 53, 80, 0.8); color: #fff; }
     .tab-btn.active { 
       background: linear-gradient(135deg, rgba(74, 111, 165, 0.85), rgba(40, 70, 120, 0.95)); 
       color: #fff; 
@@ -123,11 +99,7 @@
       border-radius: 5px;
       transition: border 0.2s;
     }
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--accent-color);
-      box-shadow: 0 0 8px var(--accent-glow);
-    }
+    .search-box input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow); }
     
     .server-time-box { 
       display: flex; 
@@ -175,27 +147,12 @@
       text-align: center;
       transition: all 0.2s ease;
     }
-    .io-btn:hover, .add-btn:hover, .mode-btn:hover { 
-      filter: brightness(1.2);
-      box-shadow: 0 0 12px rgba(255,255,255,0.15);
-    }
-    .add-btn { 
-      background: linear-gradient(135deg, #1b5e20, #2e7d32); 
-      border-color: #388e3c; 
-    }
-    .mode-btn { 
-      background: linear-gradient(135deg, #bf360c, #e65100); 
-      border-color: #f57c00; 
-    }
+    .io-btn:hover, .add-btn:hover, .mode-btn:hover { filter: brightness(1.2); box-shadow: 0 0 12px rgba(255,255,255,0.15); }
+    .add-btn { background: linear-gradient(135deg, #1b5e20, #2e7d32); border-color: #388e3c; }
+    .mode-btn { background: linear-gradient(135deg, #bf360c, #e65100); border-color: #f57c00; }
 
-    /* Grid Layout */
-    .boss-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
-      gap: 16px; 
-    }
+    .boss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
     
-    /* MVP Card Style */
     .card { 
       background: var(--card-bg); 
       backdrop-filter: blur(12px);
@@ -214,23 +171,11 @@
       border-color: rgba(180, 215, 255, 0.6);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 18px var(--accent-glow);
     }
-    .card.overdue { 
-      border-color: var(--overdue-color); 
-      box-shadow: 0 0 18px rgba(255, 77, 77, 0.4);
-    }
-    .card.overdue:hover {
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 22px rgba(255, 77, 77, 0.7);
-    }
+    .card.overdue { border-color: var(--overdue-color); box-shadow: 0 0 18px rgba(255, 77, 77, 0.4); }
     
     .card-header { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
     .boss-title-container { display: flex; align-items: center; gap: 6px; flex-grow: 1; }
-    .boss-name-display { 
-      color: var(--text-bright); 
-      font-weight: bold; 
-      font-size: 14px; 
-      cursor: pointer; 
-      transition: color 0.2s;
-    }
+    .boss-name-display { color: var(--text-bright); font-weight: bold; font-size: 14px; cursor: pointer; transition: color 0.2s; }
     .boss-name-display:hover { color: var(--valkyrie-white); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
     
     .boss-type-tag { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; letter-spacing: 0.5px; }
@@ -241,29 +186,17 @@
     .card-body { display: flex; gap: 12px; align-items: center; }
     
     .mvp-icon { 
-      width: 54px; 
-      height: 54px; 
+      width: 54px; height: 54px; 
       background: rgba(10, 12, 18, 0.85); 
       border-radius: 6px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      font-size: 11px; 
-      font-weight: bold; 
-      color: var(--accent-color); 
-      overflow: hidden; 
-      border: 1px solid var(--card-border); 
-      flex-shrink: 0; 
-      text-transform: uppercase; 
-      text-align: center; 
-      cursor: pointer; 
-      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 11px; font-weight: bold; color: var(--accent-color); 
+      overflow: hidden; border: 1px solid var(--card-border); 
+      flex-shrink: 0; text-transform: uppercase; text-align: center; 
+      cursor: pointer; box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .mvp-icon:hover {
-      border-color: var(--valkyrie-gold);
-      box-shadow: inset 0 0 8px rgba(244, 208, 111, 0.3);
-    }
+    .mvp-icon:hover { border-color: var(--valkyrie-gold); box-shadow: inset 0 0 8px rgba(244, 208, 111, 0.3); }
     .mvp-icon img { width: 100%; height: 100%; object-fit: contain; }
     
     .timer-info { flex-grow: 1; }
@@ -275,65 +208,39 @@
     .live-timer.in-window { color: var(--window-color); text-shadow: 0 0 10px rgba(255, 209, 102, 0.6); }
     
     .window-num-input { 
-      width: 38px; 
-      background: rgba(10, 12, 18, 0.85); 
-      border: 1px solid var(--card-border); 
-      color: #a0aec0; 
-      font-size: 11px; 
-      text-align: center; 
-      border-radius: 3px;
-      padding: 1px;
+      width: 38px; background: rgba(10, 12, 18, 0.85); 
+      border: 1px solid var(--card-border); color: #a0aec0; 
+      font-size: 11px; text-align: center; border-radius: 3px; padding: 1px;
     }
     .window-num-input:focus { border-color: var(--accent-color); background: #13141f; color: #fff; outline: none; }
     
     .reset-window-btn {
-      background: rgba(40, 46, 68, 0.6);
-      color: #8892b0;
-      border: 1px solid var(--card-border);
-      border-radius: 3px;
-      font-size: 10px;
-      padding: 1px 4px;
-      cursor: pointer;
-      margin-left: 2px;
-      transition: all 0.2s;
+      background: rgba(40, 46, 68, 0.6); color: #8892b0; 
+      border: 1px solid var(--card-border); border-radius: 3px; 
+      font-size: 10px; padding: 1px 4px; cursor: pointer; margin-left: 2px; transition: all 0.2s;
     }
     .reset-window-btn:hover { background: var(--accent-color); color: #fff; }
 
-    /* Time Input Container Styling */
     .manual-time-container { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
     .manual-time-container label { font-size: 11px; color: #8892b0; margin-right: 2px; }
     .time-input-group { display: flex; align-items: center; gap: 2px; }
     .time-field { 
-      width: 26px; 
-      background: rgba(10, 12, 18, 0.85); 
-      border: 1px solid var(--card-border); 
-      color: #fff; 
-      text-align: center; 
-      font-family: monospace; 
-      border-radius: 3px; 
-      padding: 3px 0; 
-      font-size: 12px; 
-      transition: border 0.2s, box-shadow 0.2s;
+      width: 26px; background: rgba(10, 12, 18, 0.85); 
+      border: 1px solid var(--card-border); color: #fff; 
+      text-align: center; font-family: monospace; border-radius: 3px; 
+      padding: 3px 0; font-size: 12px; transition: border 0.2s, box-shadow 0.2s;
     }
     .time-field:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 8px var(--accent-glow); }
     .colon-sep { color: #8892b0; font-weight: bold; font-family: monospace; }
     
     .ampm-btn {
-      background: rgba(40, 46, 68, 0.8);
-      border: 1px solid var(--card-border);
-      color: var(--valkyrie-gold);
-      font-family: monospace;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 3px 5px;
-      border-radius: 3px;
-      cursor: pointer;
-      margin-left: 2px;
-      transition: all 0.2s;
+      background: rgba(40, 46, 68, 0.8); border: 1px solid var(--card-border); 
+      color: var(--valkyrie-gold); font-family: monospace; font-size: 11px; 
+      font-weight: bold; padding: 3px 5px; border-radius: 3px; cursor: pointer; 
+      margin-left: 2px; transition: all 0.2s;
     }
     .ampm-btn:hover, .ampm-btn:focus { border-color: var(--accent-color); outline: none; background: rgba(60, 70, 100, 0.9); }
 
-    /* Action Buttons */
     .card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
     .action-btn { background: #2a2f45; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.2s, transform 0.1s; }
     .action-btn:hover { background: #3b4260; transform: translateY(-1px); }
@@ -346,7 +253,6 @@
     .boss-gear-btn:hover { background: var(--accent-color); transform: translateY(-1px); }
     .track-toggle { flex-grow: 1; padding: 6px; font-weight: bold; }
 
-    /* Modal Styling */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 200; }
     .modal-content { background: #161927; border: 1px solid var(--card-border); padding: 20px; border-radius: 8px; width: 360px; max-width: 90vw; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(180, 215, 255, 0.15); }
     .modal-content h3 { color: var(--valkyrie-white); margin-bottom: 5px; font-size: 15px; }
@@ -619,9 +525,7 @@
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         osc.start();
         osc.stop(ctx.currentTime + 0.25);
-      } catch (e) {
-        console.log("Audio blocked");
-      }
+      } catch (e) { console.log("Audio blocked"); }
     }
 
     function exportData() {
@@ -765,10 +669,7 @@
       render();
     }
 
-    function openAddModal() {
-      document.getElementById('addModal').style.display = 'flex';
-    }
-
+    function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
     function closeAddModal() {
       document.getElementById('addModal').style.display = 'none';
       document.getElementById('newBossName').value = '';
@@ -803,7 +704,7 @@
       }
     }
 
-    /* Auto-Select & Smooth Focus Lock Handlers */
+    /* Fixed Smooth Auto-Select & Non-jumping Input Handlers */
     function handleFieldFocus(elem) {
       elem.setAttribute('data-editing', 'true');
       setTimeout(() => elem.select(), 10);
@@ -823,24 +724,32 @@
         const minElem = document.getElementById(`min_${id}`);
         if (minElem) {
           minElem.focus();
+          setTimeout(() => minElem.select(), 10); // Auto-highlight minutes WITHOUT deleting
         }
       }
     }
 
-    function handleMinInput(elem, id, event) {
-      if (event.key === 'Backspace' && elem.value.length === 0) {
+    function handleMinKeypress(elem, id, event) {
+      // Magju-jump LALANG sa AM/PM kapag ikaw mismo ang nag-type ng digit sa loob ng MM input
+      if (/^[0-9]$/.test(event.key)) {
+        const selectedText = window.getSelection().toString();
+        // Pag na-select all/highlight ang buong input o 1 digit na lang natitira bago mag double digit
+        if (selectedText.length === elem.value.length || elem.value.length >= 1) {
+          setTimeout(() => {
+            if (elem.value.length >= 2) {
+              let val = parseInt(elem.value, 10);
+              if (val > 59) elem.value = '59';
+              const ampmBtn = document.getElementById(`ampm_${id}`);
+              if (ampmBtn) ampmBtn.focus();
+            }
+          }, 10);
+        }
+      } else if (event.key === 'Backspace' && elem.value.length === 0) {
         const hrElem = document.getElementById(`hr_${id}`);
         if (hrElem) {
           hrElem.focus();
+          setTimeout(() => hrElem.select(), 10);
         }
-        return;
-      }
-      elem.value = elem.value.replace(/[^0-9]/g, '');
-      if (elem.value.length >= 2) {
-        let val = parseInt(elem.value, 10);
-        if (val > 59) elem.value = '59';
-        const ampmBtn = document.getElementById(`ampm_${id}`);
-        if (ampmBtn) ampmBtn.focus();
       }
     }
 
@@ -964,7 +873,6 @@
     }
 
     function render() {
-      // Direct focus & active editing check: Titigil ang background re-render habang nagse-select/edit ng oras
       const activeEl = document.activeElement;
       if (activeEl && (activeEl.classList.contains('time-field') || activeEl.classList.contains('ampm-btn') || activeEl.hasAttribute('data-editing'))) {
         return;
@@ -1055,7 +963,7 @@
                     <input type="text" id="min_${boss.id}" class="time-field" placeholder="MM" maxlength="2" value="${currentMin}"
                       onfocus="handleFieldFocus(this)"
                       onblur="handleFieldBlur(this, '${boss.id}')"
-                      onkeyup="handleMinInput(this, '${boss.id}', event)">
+                      onkeydown="handleMinKeypress(this, '${boss.id}', event)">
                     <button type="button" id="ampm_${boss.id}" class="ampm-btn"
                       onfocus="handleFieldFocus(this)"
                       onblur="handleFieldBlur(this, '${boss.id}')"
