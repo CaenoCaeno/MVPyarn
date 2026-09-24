@@ -299,7 +299,7 @@
     }
     .reset-window-btn:hover { background: var(--accent-color); color: #fff; }
 
-    /* New Auto-Jumping Time Input Styling */
+    /* Time Input Container Styling */
     .manual-time-container { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
     .manual-time-container label { font-size: 11px; color: #8892b0; margin-right: 2px; }
     .time-input-group { display: flex; align-items: center; gap: 2px; }
@@ -804,7 +804,7 @@
       }
     }
 
-    /* Auto-Jumping Input Handlers for Time */
+    /* Auto-Jumping Time Input Handlers with Smooth Focus Locks */
     function handleHourInput(elem, id) {
       elem.value = elem.value.replace(/[^0-9]/g, '');
       if (elem.value.length >= 2) {
@@ -959,6 +959,12 @@
     }
 
     function render() {
+      // Direct focus check: Haharangan ang re-render kung nakafocus sa time inputs para iwas unexpected jump
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.classList.contains('time-field') || activeEl.classList.contains('ampm-btn'))) {
+        return;
+      }
+
       document.getElementById('utcSelect').value = state.serverUtcOffset;
       const modeBtn = document.getElementById('modeBtn');
       const tzSelect = document.getElementById('utcSelect');
