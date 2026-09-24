@@ -30,18 +30,16 @@
       font-size: 13px; 
       overflow-x: hidden;
       min-height: 100vh;
-      
-      /* Saktong Fitted sa Buong Screen */
       background-image: 
         linear-gradient(rgba(8, 10, 16, 0.45), rgba(8, 10, 16, 0.55)),
         url("valkyrie.jpg");
-      background-size: cover;           /* Automatic na i-fifit ang picture sa buong screen */
-      background-position: center top;  /* Nakatutok sa gitna at taas */
-      background-repeat: no-repeat;     /* Walang paulit-ulit na duplicate */
-      background-attachment: fixed;     /* Nakabaon ang background habang nag-sscroll */
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
-    /* Hide up/down arrow (spin buttons) globally for ALL number inputs */
+    /* Hide spin buttons globally */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -51,14 +49,14 @@
       -moz-appearance: textfield;
     }
 
-    /* Main Container Layout */
+    /* App Layout */
     .app-layout {
       display: flex;
       min-height: 100vh;
       position: relative;
     }
 
-    /* Left Main Content (Boss Grid Area) */
+    /* Main Content */
     .main-content {
       flex: 1;
       padding: 20px;
@@ -66,7 +64,7 @@
       width: calc(100% - var(--sidebar-width));
     }
 
-    /* Fixed Right Sidebar Controls */
+    /* Right Sidebar Controls */
     .right-sidebar {
       width: var(--sidebar-width);
       background: rgba(10, 12, 20, 0.92);
@@ -86,7 +84,6 @@
       box-sizing: border-box;
     }
 
-    /* Sidebar Sections */
     .sidebar-group {
       display: flex;
       flex-direction: column;
@@ -198,7 +195,7 @@
       gap: 16px; 
     }
     
-    /* MVP Card Style with Lift & Selection Glow Effects */
+    /* MVP Card Style */
     .card { 
       background: var(--card-bg); 
       backdrop-filter: blur(12px);
@@ -243,7 +240,6 @@
     .map-display { font-size: 11px; color: #8892b0; text-align: right; font-weight: 500; }
     .card-body { display: flex; gap: 12px; align-items: center; }
     
-    /* MVP Icon Display */
     .mvp-icon { 
       width: 54px; 
       height: 54px; 
@@ -303,22 +299,39 @@
     }
     .reset-window-btn:hover { background: var(--accent-color); color: #fff; }
 
-    /* Time Inputs */
-    .manual-time-container { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
-    .manual-time-container label { font-size: 11px; color: #8892b0; }
-    .manual-input { 
-      width: 75px; 
+    /* New Auto-Jumping Time Input Styling */
+    .manual-time-container { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+    .manual-time-container label { font-size: 11px; color: #8892b0; margin-right: 2px; }
+    .time-input-group { display: flex; align-items: center; gap: 2px; }
+    .time-field { 
+      width: 26px; 
       background: rgba(10, 12, 18, 0.85); 
       border: 1px solid var(--card-border); 
       color: #fff; 
       text-align: center; 
       font-family: monospace; 
       border-radius: 3px; 
-      padding: 3px; 
+      padding: 3px 0; 
       font-size: 12px; 
       transition: border 0.2s, box-shadow 0.2s;
     }
-    .manual-input:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 8px var(--accent-glow); }
+    .time-field:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 8px var(--accent-glow); }
+    .colon-sep { color: #8892b0; font-weight: bold; font-family: monospace; }
+    
+    .ampm-btn {
+      background: rgba(40, 46, 68, 0.8);
+      border: 1px solid var(--card-border);
+      color: var(--valkyrie-gold);
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 5px;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 2px;
+      transition: all 0.2s;
+    }
+    .ampm-btn:hover, .ampm-btn:focus { border-color: var(--accent-color); outline: none; background: rgba(60, 70, 100, 0.9); }
 
     /* Action Buttons */
     .card-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
@@ -347,27 +360,21 @@
 <body>
 
   <div class="app-layout">
-    <!-- Main Boss Grid Section -->
     <main id="mainContent" class="main-content">
       <div id="bossGrid" class="boss-grid"></div>
     </main>
 
-    <!-- Right Fixed Sidebar Controls -->
     <aside id="rightSidebar" class="right-sidebar">
-
-      <!-- 1. Search Bar -->
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search Boss or Map..." oninput="render()">
       </div>
 
-      <!-- 2. Navigation Tabs -->
       <div class="nav-tabs">
         <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">My Farm List</button>
         <button class="tab-btn" id="tab-mvp" onclick="switchTab('mvp')">MVP Catalog</button>
         <button class="tab-btn" id="tab-mini" onclick="switchTab('mini')">Mini Boss Catalog</button>
       </div>
 
-      <!-- 3. Server Clock & Mode Box -->
       <div class="sidebar-group">
         <button id="modeBtn" class="mode-btn" onclick="toggleTimeMode()"> Server Time Mode</button>
         <div class="server-time-box">
@@ -405,17 +412,14 @@
         </div>
       </div>
 
-      <!-- 4. Quick Actions -->
       <div class="sidebar-group">
         <button class="add-btn" onclick="openAddModal()"> Add Boss</button>
       </div>
 
-      <!-- 5. System Controls (Export & Import) -->
       <div class="io-group">
         <button class="io-btn" onclick="exportData()"> Export</button>
         <button class="io-btn" onclick="importData()"> Import</button>
       </div>
-
     </aside>
   </div>
 
@@ -459,7 +463,7 @@
     </div>
   </div>
 
-  <!-- Single Boss Settings Modal -->
+  <!-- Boss Settings Modal -->
   <div id="bossSettingsModal" class="modal">
     <div class="modal-content">
       <h3 id="bossSettingsTitle">&#9881; Boss Settings</h3>
@@ -498,7 +502,6 @@
 
   <script>
     const initialBosses = [
-      // --- MVPs ---
       { id: "baphomet", mobId: 1039, name: "Baphomet", map: "prt_maze03", minWindow: 120, maxWindow: 130, type: "mvp" },
       { id: "phreeoni", mobId: 1159, name: "Phreeoni", map: "moc_fild17", minWindow: 120, maxWindow: 130, type: "mvp" },
       { id: "eddga", mobId: 1115, name: "Eddga", map: "pay_fild11", minWindow: 120, maxWindow: 130, type: "mvp" },
@@ -542,7 +545,6 @@
       { id: "gorynych", mobId: 1885, name: "Gorynych", map: "mosk_dun03", minWindow: 120, maxWindow: 130, type: "mvp" },
       { id: "reginleif", mobId: null, name: "Reginleif", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
       { id: "ingrid", mobId: null, name: "Ingrid", map: "odin_tem02", minWindow: 480, maxWindow: 490, type: "mvp" },
-      // --- MINI BOSSES ---
       { id: "angeling", mobId: 1096, name: "Angeling", map: "pay_fild04", minWindow: 60, maxWindow: 60, type: "mini" },
       { id: "deviling", mobId: 1582, name: "Deviling", map: "pay_fild04", minWindow: 120, maxWindow: 120, type: "mini" },
       { id: "ghostring", mobId: 1120, name: "Ghostring", map: "pay_fild04", minWindow: 113, maxWindow: 113, type: "mini" },
@@ -680,34 +682,6 @@
       saveState();
     }
 
-    function resetWindowToDefault(bossId) {
-      const baseBoss = getAllBosses().find(b => b.id === bossId);
-      if (!baseBoss) return;
-      if (!state.customData[bossId]) state.customData[bossId] = {};
-      state.customData[bossId].minWindow = baseBoss.minWindow;
-      state.customData[bossId].maxWindow = baseBoss.maxWindow;
-      saveState();
-      render();
-    }
-
-    function openBossSettings(bossId) {
-      const boss = getAllBosses().find(b => b.id === bossId);
-      if (!boss) return;
-      const data = getBossData(boss);
-      document.getElementById('editBossId').value = boss.id;
-      document.getElementById('bossSettingsTitle').innerHTML = `&#9881; ${data.name} Settings`;
-      document.getElementById('editBossName').value = data.name;
-      document.getElementById('editBossMap').value = data.map;
-      document.getElementById('editBossMin').value = data.minWindow;
-      document.getElementById('editBossMax').value = data.maxWindow;
-      document.getElementById('editBossImg').value = data.imageUrl || '';
-      document.getElementById('bossSettingsModal').style.display = 'flex';
-    }
-
-    function closeBossSettingsModal() {
-      document.getElementById('bossSettingsModal').style.display = 'none';
-    }
-
     function saveBossSettings() {
       const id = document.getElementById('editBossId').value;
       if (!id) return;
@@ -737,6 +711,34 @@
         closeBossSettingsModal();
         render();
       }
+    }
+
+    function resetWindowToDefault(bossId) {
+      const baseBoss = getAllBosses().find(b => b.id === bossId);
+      if (!baseBoss) return;
+      if (!state.customData[bossId]) state.customData[bossId] = {};
+      state.customData[bossId].minWindow = baseBoss.minWindow;
+      state.customData[bossId].maxWindow = baseBoss.maxWindow;
+      saveState();
+      render();
+    }
+
+    function openBossSettings(bossId) {
+      const boss = getAllBosses().find(b => b.id === bossId);
+      if (!boss) return;
+      const data = getBossData(boss);
+      document.getElementById('editBossId').value = boss.id;
+      document.getElementById('bossSettingsTitle').innerHTML = `&#9881; ${data.name} Settings`;
+      document.getElementById('editBossName').value = data.name;
+      document.getElementById('editBossMap').value = data.map;
+      document.getElementById('editBossMin').value = data.minWindow;
+      document.getElementById('editBossMax').value = data.maxWindow;
+      document.getElementById('editBossImg').value = data.imageUrl || '';
+      document.getElementById('bossSettingsModal').style.display = 'flex';
+    }
+
+    function closeBossSettingsModal() {
+      document.getElementById('bossSettingsModal').style.display = 'none';
     }
 
     function resetTimer(id) {
@@ -802,10 +804,73 @@
       }
     }
 
-    function handleManualTime(id, val) {
-      if (!/^\d{2}:\d{2}$/.test(val)) return;
-      const [hrs, mins] = val.split(':').map(Number);
-      
+    /* Auto-Jumping Input Handlers for Time */
+    function handleHourInput(elem, id) {
+      elem.value = elem.value.replace(/[^0-9]/g, '');
+      if (elem.value.length >= 2) {
+        let val = parseInt(elem.value, 10);
+        if (val > 12) elem.value = '12';
+        if (val === 0) elem.value = '12';
+        const minElem = document.getElementById(`min_${id}`);
+        if (minElem) {
+          minElem.focus();
+          minElem.select();
+        }
+      }
+    }
+
+    function handleMinInput(elem, id, event) {
+      if (event.key === 'Backspace' && elem.value.length === 0) {
+        const hrElem = document.getElementById(`hr_${id}`);
+        if (hrElem) {
+          hrElem.focus();
+          hrElem.select();
+        }
+        return;
+      }
+      elem.value = elem.value.replace(/[^0-9]/g, '');
+      if (elem.value.length >= 2) {
+        let val = parseInt(elem.value, 10);
+        if (val > 59) elem.value = '59';
+        const ampmBtn = document.getElementById(`ampm_${id}`);
+        if (ampmBtn) ampmBtn.focus();
+      }
+    }
+
+    function handleAmPmKey(elem, id, event) {
+      const key = event.key.toLowerCase();
+      if (key === 'a') {
+        elem.innerText = 'AM';
+        saveManualTime(id);
+      } else if (key === 'p') {
+        elem.innerText = 'PM';
+        saveManualTime(id);
+      } else if (event.key === 'Enter') {
+        saveManualTime(id);
+      }
+    }
+
+    function toggleAmPm(id) {
+      const btn = document.getElementById(`ampm_${id}`);
+      if (!btn) return;
+      btn.innerText = btn.innerText === 'AM' ? 'PM' : 'AM';
+      saveManualTime(id);
+    }
+
+    function saveManualTime(id) {
+      const hrElem = document.getElementById(`hr_${id}`);
+      const minElem = document.getElementById(`min_${id}`);
+      const ampmBtn = document.getElementById(`ampm_${id}`);
+      if (!hrElem || !minElem || !ampmBtn) return;
+
+      let hrs = parseInt(hrElem.value, 10);
+      let mins = parseInt(minElem.value, 10);
+      if (isNaN(hrs) || isNaN(mins)) return;
+
+      const ampm = ampmBtn.innerText.trim().toUpperCase();
+      if (ampm === 'PM' && hrs < 12) hrs += 12;
+      if (ampm === 'AM' && hrs === 12) hrs = 0;
+
       const targetNow = getTargetTime();
       const targetTimeObj = new Date(targetNow.getTime());
       targetTimeObj.setHours(hrs, mins, 0, 0);
@@ -814,22 +879,32 @@
       }
       const offsetMs = (targetNow.getTime() - Date.now());
       const localEpoch = targetTimeObj.getTime() - offsetMs;
+      
       if (!state.customData[id]) state.customData[id] = {};
       state.customData[id].killTime = localEpoch;
       alertedBosses.delete(id);
       saveState();
+      isEditingInput = false;
       render();
     }
 
     function formatTimeWindow(dateObj) {
-      const h = String(dateObj.getHours()).padStart(2, '0');
+      let h = dateObj.getHours();
       const m = String(dateObj.getMinutes()).padStart(2, '0');
-      return `${h}:${m}`;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12;
+      return {
+        hh: String(h).padStart(2, '0'),
+        mm: m,
+        ampm: ampm,
+        fullStr: `${String(h).padStart(2, '0')}:${m} ${ampm}`
+      };
     }
 
     function calculateTimes(boss) {
       const data = getBossData(boss);
-      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", killTimeStr: "", spawnWindowStr: "--:-- - --:--" };
+      if (!data.killTime) return { nextMinMs: Infinity, displayStr: "--:--:--", status: "none", killObj: null, spawnWindowStr: "--:-- - --:--" };
       const minSpawnTime = data.killTime + (data.minWindow * 60000);
       const maxSpawnTime = data.killTime + (data.maxWindow * 60000);
       const now = Date.now();
@@ -840,6 +915,7 @@
       let killDateObj = localKillDate;
       let minDateObj = localMinDate;
       let maxDateObj = localMaxDate;
+
       if (state.displayMode === 'server') {
         const getUtcServerDate = (d) => {
           const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -849,8 +925,12 @@
         minDateObj = getUtcServerDate(localMinDate);
         maxDateObj = getUtcServerDate(localMaxDate);
       }
-      const killTimeStr = formatTimeWindow(killDateObj);
-      const spawnWindowStr = `${formatTimeWindow(minDateObj)} - ${formatTimeWindow(maxDateObj)}`;
+
+      const killObj = formatTimeWindow(killDateObj);
+      const minObj = formatTimeWindow(minDateObj);
+      const maxObj = formatTimeWindow(maxDateObj);
+      const spawnWindowStr = `${minObj.fullStr} - ${maxObj.fullStr}`;
+
       if (diff <= 0) {
         const overdueMs = Math.abs(diff);
         const status = now > maxSpawnTime ? "overdue" : "in-window";
@@ -859,9 +939,9 @@
           alertedBosses.add(boss.id);
           playChime(880);
         }
-        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, killTimeStr, spawnWindowStr };
+        return { nextMinMs: minSpawnTime, displayStr: `+${formatMs(overdueMs)}`, status, killObj, spawnWindowStr };
       }
-      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", killTimeStr, spawnWindowStr };
+      return { nextMinMs: minSpawnTime, displayStr: formatMs(diff), status: "active", killObj, spawnWindowStr };
     }
 
     function formatMs(ms) {
@@ -925,6 +1005,11 @@
         const inputLabelStr = state.displayMode === 'local' ? 'Kill (My Time):' : 'Kill (Server):';
         const safeName = data.name.replace(/'/g, "\\'");
         const initials = data.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase();
+        
+        const currentHr = timing.killObj ? timing.killObj.hh : '';
+        const currentMin = timing.killObj ? timing.killObj.mm : '';
+        const currentAmPm = timing.killObj ? timing.killObj.ampm : 'PM';
+
         card.innerHTML = `
           <div class="card-header">
             <div class="boss-title-container">
@@ -938,22 +1023,31 @@
               ${imgSrc ? `<img src="${imgSrc}" alt="${data.name}" onerror="handleImageError(this, '${safeName}')">` : `<span>${initials}</span>`}
             </div>
             <div class="timer-info">
-          <div class="window-tag">
-  [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
-  - 
-  [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
-  mins
-  <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">&#8634;</button>
-</div>
+              <div class="window-tag">
+                [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
+                - 
+                [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
+                mins
+                <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">&#8634;</button>
+              </div>
               <div class="live-timer ${timing.status}">${timing.displayStr}</div>
               <div class="respawn-time-tag"> Respawn: ${timing.spawnWindowStr}</div>
               ${currentTab === 'farm' ? `
                 <div class="manual-time-container">
                   <label>${inputLabelStr}</label>
-                  <input type="text" class="manual-input" placeholder="HH:MM" maxlength="5" value="${timing.killTimeStr}"
-                    onfocus="isEditingInput=true" 
-                    onblur="isEditingInput=false; handleManualTime('${boss.id}', this.value)"
-                    onkeydown="if(event.key==='Enter') { this.blur(); }">
+                  <div class="time-input-group">
+                    <input type="text" id="hr_${boss.id}" class="time-field" placeholder="HH" maxlength="2" value="${currentHr}"
+                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      oninput="handleHourInput(this, '${boss.id}')">
+                    <span class="colon-sep">:</span>
+                    <input type="text" id="min_${boss.id}" class="time-field" placeholder="MM" maxlength="2" value="${currentMin}"
+                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      onkeyup="handleMinInput(this, '${boss.id}', event)">
+                    <button type="button" id="ampm_${boss.id}" class="ampm-btn"
+                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      onclick="toggleAmPm('${boss.id}')"
+                      onkeydown="handleAmPmKey(this, '${boss.id}', event)">${currentAmPm}</button>
+                  </div>
                 </div>
               ` : ''}
             </div>
