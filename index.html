@@ -562,7 +562,6 @@
     ];
 
     let currentTab = 'farm';
-    let isEditingInput = false;
     let alertedBosses = new Set();
     let state = JSON.parse(localStorage.getItem('ro_mvp_state')) || {
       tracked: ["baphomet", "eddga", "angeling", "ghostring"],
@@ -804,7 +803,17 @@
       }
     }
 
-    /* Auto-Jumping Time Input Handlers with Smooth Focus Locks */
+    /* Auto-Select & Smooth Focus Lock Handlers */
+    function handleFieldFocus(elem) {
+      elem.setAttribute('data-editing', 'true');
+      setTimeout(() => elem.select(), 10);
+    }
+
+    function handleFieldBlur(elem, id) {
+      elem.removeAttribute('data-editing');
+      saveManualTime(id);
+    }
+
     function handleHourInput(elem, id) {
       elem.value = elem.value.replace(/[^0-9]/g, '');
       if (elem.value.length >= 2) {
@@ -814,7 +823,6 @@
         const minElem = document.getElementById(`min_${id}`);
         if (minElem) {
           minElem.focus();
-          minElem.select();
         }
       }
     }
@@ -824,7 +832,6 @@
         const hrElem = document.getElementById(`hr_${id}`);
         if (hrElem) {
           hrElem.focus();
-          hrElem.select();
         }
         return;
       }
@@ -884,8 +891,6 @@
       state.customData[id].killTime = localEpoch;
       alertedBosses.delete(id);
       saveState();
-      isEditingInput = false;
-      render();
     }
 
     function formatTimeWindow(dateObj) {
@@ -959,9 +964,9 @@
     }
 
     function render() {
-      // Direct focus check: Haharangan ang re-render kung nakafocus sa time inputs para iwas unexpected jump
+      // Direct focus & active editing check: Titigil ang background re-render habang nagse-select/edit ng oras
       const activeEl = document.activeElement;
-      if (activeEl && (activeEl.classList.contains('time-field') || activeEl.classList.contains('ampm-btn'))) {
+      if (activeEl && (activeEl.classList.contains('time-field') || activeEl.classList.contains('ampm-btn') || activeEl.hasAttribute('data-editing'))) {
         return;
       }
 
@@ -1030,9 +1035,9 @@
             </div>
             <div class="timer-info">
               <div class="window-tag">
-                [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
+                [<input type="number" class="window-num-input" value="${data.minWindow}" onfocus="handleFieldFocus(this)" onblur="handleFieldBlur(this, '${boss.id}'); updateCustomField('${boss.id}', 'minWindow', parseInt(this.value)||0)">]
                 - 
-                [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="isEditingInput=true" onblur="isEditingInput=false; updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
+                [<input type="number" class="window-num-input" value="${data.maxWindow}" onfocus="handleFieldFocus(this)" onblur="handleFieldBlur(this, '${boss.id}'); updateCustomField('${boss.id}', 'maxWindow', parseInt(this.value)||0)">]
                 mins
                 <button class="reset-window-btn" title="Reset Respawn Window to Default" onclick="resetWindowToDefault('${boss.id}')">&#8634;</button>
               </div>
@@ -1043,14 +1048,17 @@
                   <label>${inputLabelStr}</label>
                   <div class="time-input-group">
                     <input type="text" id="hr_${boss.id}" class="time-field" placeholder="HH" maxlength="2" value="${currentHr}"
-                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      onfocus="handleFieldFocus(this)"
+                      onblur="handleFieldBlur(this, '${boss.id}')"
                       oninput="handleHourInput(this, '${boss.id}')">
                     <span class="colon-sep">:</span>
                     <input type="text" id="min_${boss.id}" class="time-field" placeholder="MM" maxlength="2" value="${currentMin}"
-                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      onfocus="handleFieldFocus(this)"
+                      onblur="handleFieldBlur(this, '${boss.id}')"
                       onkeyup="handleMinInput(this, '${boss.id}', event)">
                     <button type="button" id="ampm_${boss.id}" class="ampm-btn"
-                      onfocus="isEditingInput=true" onblur="isEditingInput=false"
+                      onfocus="handleFieldFocus(this)"
+                      onblur="handleFieldBlur(this, '${boss.id}')"
                       onclick="toggleAmPm('${boss.id}')"
                       onkeydown="handleAmPmKey(this, '${boss.id}', event)">${currentAmPm}</button>
                   </div>
@@ -1077,7 +1085,7 @@
 
     setInterval(() => {
       updateServerClock();
-      if (currentTab === 'farm' && !isEditingInput) {
+      if (currentTab === 'farm') {
         render();
       }
     }, 1000);
